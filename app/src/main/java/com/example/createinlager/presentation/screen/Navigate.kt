@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.createinlager.presentation.screen.OnBoards.OnBoards
 import com.example.createinlager.presentation.screen.authentication.RegisterAcc
+import com.example.createinlager.presentation.screen.authentication.SingIn
 
 @Composable
 fun Navigate() {
@@ -18,6 +19,8 @@ fun Navigate() {
     ) {
         composable("OnBoards") { OnBoards(navController) }
         composable("RegisterAcc") { RegisterAcc(navController) }
+        composable("SingIn") { SingIn(navController) }
+
 
     }
 }

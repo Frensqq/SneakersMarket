@@ -135,3 +135,14 @@ val bottomText = TextStyle(
     lineHeight = 16.sp,
     letterSpacing = 0.sp,
 )
+
+
+val miniTextButton = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.sp,
+)
+
+

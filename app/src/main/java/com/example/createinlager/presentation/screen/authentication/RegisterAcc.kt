@@ -144,7 +144,7 @@ fun RegisterAcc(navController: NavController){
                 Row(modifier = Modifier.fillMaxSize().padding(bottom = 47.dp), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Center) {
                     Text("Есть аккаунт?", style = bottomText, color = colorResource(R.color.hint))
 
-                    Text(" Войти", style = bottomText, color = colorResource(R.color.text), modifier = Modifier.clickable {  })
+                    Text(" Войти", style = bottomText, color = colorResource(R.color.text), modifier = Modifier.clickable { navController.navigate("SingIn") })
                 }
             }
         }
@@ -195,7 +195,7 @@ fun textFieldAunth(prew: String, type: Boolean, Spacing:Int): MutableState<Strin
             KeyboardType.Text}),
         placeholder = { Box {Text(prew, style = TextFieldPlace, letterSpacing = Spacing.sp) } },
         shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.padding(top = 12.dp).height(50.dp).fillMaxWidth(),)
+        modifier = Modifier.height(50.dp).fillMaxWidth(),)
 
     return text
 }
@@ -233,7 +233,7 @@ fun passwordFieldAunth(prew: String): MutableState<String> {
             }
         } },
         shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.padding(top = 12.dp).height(50.dp)
+        modifier = Modifier.height(50.dp)
             .fillMaxWidth(),
 
 
