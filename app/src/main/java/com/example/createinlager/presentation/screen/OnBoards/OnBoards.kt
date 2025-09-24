@@ -161,6 +161,4 @@ fun OnBoards(navController: NavController) {
             }
         }
     }
-
-
-    }
+}

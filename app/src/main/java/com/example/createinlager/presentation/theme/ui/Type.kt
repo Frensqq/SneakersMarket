@@ -9,6 +9,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.W700
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import com.example.createinlager.R
 
@@ -101,5 +102,36 @@ val TextFieldPlace = TextStyle(
     fontWeight = FontWeight(400),
     fontSize = 14.sp,
     lineHeight = 16.sp,
-    letterSpacing = 2.sp
+)
+
+val TitleAuth = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 32.sp,
+    lineHeight = 32.sp,
+    letterSpacing = 0.sp
+)
+
+val nameTextField = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(500),
+    fontSize = 16.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.sp
+)
+
+val TextUnderLine = TextStyle(fontFamily = RaleWayFamily,
+fontWeight = FontWeight.Normal,
+fontSize = 16.sp,
+lineHeight = 17.sp,
+letterSpacing = 0.sp,
+    textDecoration = TextDecoration.Underline
+)
+
+val bottomText = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 16.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.sp,
 )
