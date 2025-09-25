@@ -8,32 +8,35 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,17 +47,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
+import com.example.createinlager.domain.state.ResultState
+import com.example.createinlager.presentation.screen.viewModels.UserViewModel
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
@@ -62,10 +66,13 @@ import com.example.createinlager.presentation.theme.ui.TextUnderLine
 import com.example.createinlager.presentation.theme.ui.TitleAuth
 import com.example.createinlager.presentation.theme.ui.bottomText
 import com.example.createinlager.presentation.theme.ui.nameTextField
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun RegisterAcc(navController: NavController){
+fun RegisterAcc(navController: NavController, viewModel: UserViewModel = viewModel()){
+
+    val result = viewModel.resultState.collectAsState()
 
     var checkBox by remember { mutableStateOf(false) }
 
@@ -122,7 +129,7 @@ fun RegisterAcc(navController: NavController){
             }
             Spacer(modifier = Modifier.width(24.dp))
 
-            Button(onClick = { },
+            Button(onClick = { viewModel.Registration(name.value,email.value,password.value)},
                 enabled = checkBox,
                 modifier = Modifier
                     .padding(top = 24.dp)
@@ -148,8 +155,65 @@ fun RegisterAcc(navController: NavController){
                 }
             }
         }
+        when (result.value) {
+            is ResultState.Error -> {
+                ErrorAunth((result.value as ResultState.Error).message, "Ошибка Регистрации")
+            }
+            ResultState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentAlignment = Alignment.Center
+
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.fillMaxSize(0.5f),
+                        strokeWidth = 10.dp,
+                        color = colorResource(R.color.accent))
+                }
+            }
+            ResultState.Initialized -> {
+            }
+            is ResultState.Success -> {
+
+                navController.navigate("SingIn")
+
+            }
+        }
     }
+
+
 }
+
+
+@Composable
+fun ErrorAunth(RegError: String, TypeErroe: String){
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                message = TypeErroe+"\n"+RegError,
+                duration = SnackbarDuration.Long
+            )
+        }
+    }
+
+
+    SnackbarHost(
+        hostState = snackbarHostState,
+        snackbar = { data ->
+            Snackbar(
+                containerColor = colorResource(R.color.accent),
+                contentColor = Color.White,
+                content = { Text(data.visuals.message, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center) },
+                modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                shape = RoundedCornerShape(13.dp),
+                )
+        }
+    )
+}
+
 
 
 
@@ -193,7 +257,7 @@ fun textFieldAunth(prew: String, type: Boolean, Spacing:Int): MutableState<Strin
         ),
         keyboardOptions = KeyboardOptions(keyboardType = if (type){KeyboardType.Email} else {
             KeyboardType.Text}),
-        placeholder = { Box {Text(prew, style = TextFieldPlace, letterSpacing = Spacing.sp) } },
+        placeholder = { Box {Text(prew, style = TextFieldPlace, letterSpacing = Spacing.sp, color =  colorResource(R.color.hint))} },
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier.height(50.dp).fillMaxWidth(),)
 

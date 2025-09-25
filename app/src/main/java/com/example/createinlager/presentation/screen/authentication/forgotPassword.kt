@@ -67,7 +67,7 @@ fun forgotPassword(navController: NavController){
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            val email = textFieldAunth("ly4dov.s@yandex.ru", true, 0)
+            val email = textFieldAunth("xyz@gmail.com", true, 0)
 
             Spacer(modifier = Modifier.height(40.dp))
 

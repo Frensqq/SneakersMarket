@@ -1,0 +1,84 @@
+package com.example.createinlager.presentation.screen.viewModels
+
+import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.createinlager.data.model.ErrorResponce
+import com.example.createinlager.data.model.UserResponse
+import com.example.createinlager.data.remote.PocketBaseApiService
+import com.example.createinlager.domain.model.UserRequest
+import com.example.createinlager.domain.state.ResultState
+import com.google.gson.Gson
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+class UserViewModel(): ViewModel() {
+
+    private val apiService = PocketBaseApiService.instance
+    private val _user = mutableStateOf<UserResponse?>(null)
+    val user: State<UserResponse?> get() = _user
+
+    private val _showSuccessDialog = MutableStateFlow(false)
+    val showSuccessDialog: StateFlow<Boolean> = _showSuccessDialog
+
+    private val _resultState = MutableStateFlow<ResultState>(ResultState.Initialized)
+    val resultState: StateFlow<ResultState> = _resultState.asStateFlow()
+
+    fun Registration(name: String, email: String, password:String){
+        _resultState.value = ResultState.Loading
+        viewModelScope.launch {
+            apiService.RegistrationUser(
+                UserRequest(
+                    name = name,
+                    email,
+                    password,
+                    passwordConfirm = password
+                )
+            ).enqueue( object: Callback<UserResponse>{
+                override fun onResponse(
+                    call: Call<UserResponse>,
+                    response: Response<UserResponse>
+                ) {
+                    try {
+                        response.body()?.let {
+                            val id = it.id
+                            _resultState.value = ResultState.Success("Success")
+                            _showSuccessDialog.value = true
+                            Log.d("Registration", id)
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message = Gson().fromJson(it.string(), ErrorResponce::class.java).message
+                                _resultState.value = ResultState.Error(message)
+
+                            }
+                            catch (ex: Exception){
+                                Log.e("Register",
+                                    "Failed to parse error response: ${ex.message}")
+                                _resultState.value  = ResultState.Error(ex.message.toString())
+                            }
+                        }
+                    }
+                    catch (ex: Exception){
+                        Log.e("Register", ex.message.toString())
+                        _resultState.value  = ResultState.Error(ex.message.toString())
+                    }
+                }
+                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                    _resultState.value = ResultState.Error(t.message.toString())
+                    Log.e("Register", t.message.toString())
+                }
+            })
+        }
+    }
+
+
+
+}
