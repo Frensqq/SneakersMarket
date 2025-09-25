@@ -75,7 +75,7 @@ fun SingIn(navController: NavController){
                 "Востановить",
                 textAlign = TextAlign.End,
                 modifier = Modifier.padding(top = 12.dp).fillMaxWidth()
-                    .clickable { navController.navigate("ForgPass") },
+                    .clickable { navController.navigate("forgotPassword") },
                 style = miniTextButton
             )
 
