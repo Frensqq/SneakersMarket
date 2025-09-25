@@ -5,11 +5,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.createinlager.data.model.AuthResponse
 import com.example.createinlager.data.model.ErrorResponce
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.remote.PocketBaseApiService
+import com.example.createinlager.domain.model.UserAuth
 import com.example.createinlager.domain.model.UserRequest
 import com.example.createinlager.domain.state.ResultState
+import com.example.createinlager.presentation.screen.authentication.ErrorAunth
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -76,6 +79,51 @@ class UserViewModel(): ViewModel() {
                     Log.e("Register", t.message.toString())
                 }
             })
+        }
+    }
+
+    fun SingIn(identity: String, password: String){
+        _resultState.value = ResultState.Loading
+        viewModelScope.launch {
+            apiService.AuthPass(
+                UserAuth(
+                    identity,
+                    password
+                )
+            ).enqueue(object: Callback<AuthResponse>{
+                override fun onResponse(
+                    call: Call<AuthResponse>,
+                    response: Response<AuthResponse>
+                ) {
+                    try {
+                        response.body()?.let {
+                            val token = it.token
+                            Log.d("SingIn",token)
+                            _resultState.value = ResultState.Success("Success")
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message = Gson().fromJson(it.string(), ErrorResponce::class.java)
+                                _resultState.value = ResultState.Error(message.toString())
+                            }
+                            catch (ex: Exception){
+                                Log.e("SingIn","Failed to parse error response: ${ex.message}")
+                                _resultState.value = ResultState.Error(ex.message.toString())
+                            }
+                        }
+
+                    }
+                    catch (ex: Exception){
+                        Log.e("SingIn",ex.message.toString())
+                        _resultState.value = ResultState.Error(ex.message.toString())
+                    }
+                }
+                override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                    Log.e("SingIn", t.message.toString())
+                    _resultState.value= ResultState.Error(t.message.toString())
+                }
+            })
+
         }
     }
 

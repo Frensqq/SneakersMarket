@@ -81,7 +81,7 @@ fun RegisterAcc(navController: NavController, viewModel: UserViewModel = viewMod
 
             Spacer(modifier = Modifier.height(63.dp))
 
-            buttonBack(navController,"SingIn")
+            buttonBack(navController,"OnBoards")
 
             Spacer(modifier = Modifier.height(11.dp))
 

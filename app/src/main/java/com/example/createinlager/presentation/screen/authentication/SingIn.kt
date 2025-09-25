@@ -13,15 +13,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
+import com.example.createinlager.domain.state.ResultState
+import com.example.createinlager.presentation.screen.viewModels.UserViewModel
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
 import com.example.createinlager.presentation.theme.ui.TitleAuth
@@ -29,7 +35,9 @@ import com.example.createinlager.presentation.theme.ui.bottomText
 import com.example.createinlager.presentation.theme.ui.miniTextButton
 
 @Composable
-fun SingIn(navController: NavController){
+fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel()){
+
+    val result = viewModel.resultState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize().background(colorResource(R.color.white))) {
 
@@ -81,7 +89,7 @@ fun SingIn(navController: NavController){
 
 
             Button(
-                onClick = { },
+                onClick = { viewModel.SingIn(email.value, password.value)},
                 modifier = Modifier
                     .padding(top = 24.dp)
                     .height(50.dp)
@@ -113,6 +121,38 @@ fun SingIn(navController: NavController){
             }
         }
     }
+
+    when(result.value){
+        ResultState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize()
+                    .clip(RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
+
+            ) {
+                CircularProgressIndicator(modifier = Modifier.fillMaxSize(0.5f),
+                    strokeWidth = 10.dp,
+                    color = colorResource(R.color.accent))
+            }
+        }
+        ResultState.Initialized -> {
+
+        }
+        is ResultState.Error -> {
+            ErrorAunth((result.value as ResultState.Error).message, "Ошибка авторизации!")
+
+        }
+        is ResultState.Success -> {
+            navController.navigate("SingIn")
+
+        }
+
+
+    }
+
+
+
+
 
 
 }
