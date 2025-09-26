@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.createinlager.data.model.AuthResponse
 import com.example.createinlager.data.model.ErrorResponce
+import com.example.createinlager.data.model.OtpResponse
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.remote.PocketBaseApiService
 import com.example.createinlager.domain.model.UserAuth
@@ -125,6 +126,46 @@ class UserViewModel(): ViewModel() {
             })
 
         }
+    }
+
+    fun OTPCodeRequest(email: String){
+        viewModelScope.launch {
+            _resultState.value = ResultState.Loading
+            apiService.OTPRequest(
+                email
+            ).enqueue(object: Callback<OtpResponse>{
+                override fun onResponse(
+                    call: Call<OtpResponse>,
+                    response: Response<OtpResponse>
+                ) {
+                    try {
+                        response.body()?.let {
+                            val OtpId = it.otpId
+                            Log.d("OtpRequest",OtpId)
+                            _resultState.value = ResultState.Success("Success")
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message = Gson().fromJson(it.string(), ErrorResponce::class.java)
+                            }
+                            catch (ex: Exception){
+
+                            }
+
+                        }
+                    }
+                    catch (ex: Exception){
+
+                    }
+                }
+
+                override fun onFailure(call: Call<OtpResponse>, t: Throwable) {
+
+                }
+
+            })
+        }
+
     }
 
 
