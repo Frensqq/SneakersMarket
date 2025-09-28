@@ -10,6 +10,7 @@ import com.example.createinlager.data.model.ErrorResponce
 import com.example.createinlager.data.model.OtpResponse
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.remote.PocketBaseApiService
+import com.example.createinlager.domain.model.OtpRequest
 import com.example.createinlager.domain.model.UserAuth
 import com.example.createinlager.domain.model.UserRequest
 import com.example.createinlager.domain.state.ResultState
@@ -35,7 +36,10 @@ class UserViewModel(): ViewModel() {
     private val _resultState = MutableStateFlow<ResultState>(ResultState.Initialized)
     val resultState: StateFlow<ResultState> = _resultState.asStateFlow()
 
-    fun Registration(name: String, email: String, password:String){
+    private val _resultEmailState = MutableStateFlow<ResultState>(ResultState.Initialized)
+    val resultEmailState: StateFlow<ResultState> = _resultEmailState.asStateFlow()
+
+    fun Registration(name: String, email: String, password: String) {
         _resultState.value = ResultState.Loading
         viewModelScope.launch {
             apiService.RegistrationUser(
@@ -45,7 +49,7 @@ class UserViewModel(): ViewModel() {
                     password,
                     passwordConfirm = password
                 )
-            ).enqueue( object: Callback<UserResponse>{
+            ).enqueue(object : Callback<UserResponse> {
                 override fun onResponse(
                     call: Call<UserResponse>,
                     response: Response<UserResponse>
@@ -59,22 +63,24 @@ class UserViewModel(): ViewModel() {
                         }
                         response.errorBody()?.let {
                             try {
-                                val message = Gson().fromJson(it.string(), ErrorResponce::class.java).message
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java).message
                                 _resultState.value = ResultState.Error(message)
 
-                            }
-                            catch (ex: Exception){
-                                Log.e("Register",
-                                    "Failed to parse error response: ${ex.message}")
-                                _resultState.value  = ResultState.Error(ex.message.toString())
+                            } catch (ex: Exception) {
+                                Log.e(
+                                    "Register",
+                                    "Failed to parse error response: ${ex.message}"
+                                )
+                                _resultState.value = ResultState.Error(ex.message.toString())
                             }
                         }
-                    }
-                    catch (ex: Exception){
+                    } catch (ex: Exception) {
                         Log.e("Register", ex.message.toString())
-                        _resultState.value  = ResultState.Error(ex.message.toString())
+                        _resultState.value = ResultState.Error(ex.message.toString())
                     }
                 }
+
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                     _resultState.value = ResultState.Error(t.message.toString())
                     Log.e("Register", t.message.toString())
@@ -83,7 +89,7 @@ class UserViewModel(): ViewModel() {
         }
     }
 
-    fun SingIn(identity: String, password: String){
+    fun SingIn(identity: String, password: String) {
         _resultState.value = ResultState.Loading
         viewModelScope.launch {
             apiService.AuthPass(
@@ -91,7 +97,7 @@ class UserViewModel(): ViewModel() {
                     identity,
                     password
                 )
-            ).enqueue(object: Callback<AuthResponse>{
+            ).enqueue(object : Callback<AuthResponse> {
                 override fun onResponse(
                     call: Call<AuthResponse>,
                     response: Response<AuthResponse>
@@ -99,41 +105,41 @@ class UserViewModel(): ViewModel() {
                     try {
                         response.body()?.let {
                             val token = it.token
-                            Log.d("SingIn",token)
+                            Log.d("SingIn", token)
                             _resultState.value = ResultState.Success("Success")
                         }
                         response.errorBody()?.let {
                             try {
-                                val message = Gson().fromJson(it.string(), ErrorResponce::class.java)
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java)
                                 _resultState.value = ResultState.Error(message.toString())
-                            }
-                            catch (ex: Exception){
-                                Log.e("SingIn","Failed to parse error response: ${ex.message}")
+                            } catch (ex: Exception) {
+                                Log.e("SingIn", "Failed to parse error response: ${ex.message}")
                                 _resultState.value = ResultState.Error(ex.message.toString())
                             }
                         }
 
-                    }
-                    catch (ex: Exception){
-                        Log.e("SingIn",ex.message.toString())
+                    } catch (ex: Exception) {
+                        Log.e("SingIn", ex.message.toString())
                         _resultState.value = ResultState.Error(ex.message.toString())
                     }
                 }
+
                 override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
                     Log.e("SingIn", t.message.toString())
-                    _resultState.value= ResultState.Error(t.message.toString())
+                    _resultState.value = ResultState.Error(t.message.toString())
                 }
             })
 
         }
     }
 
-    fun OTPCodeRequest(email: String){
+    fun sendOTPCode(email: String) {
         viewModelScope.launch {
-            _resultState.value = ResultState.Loading
+            _resultEmailState.value = ResultState.Loading
             apiService.OTPRequest(
-                email
-            ).enqueue(object: Callback<OtpResponse>{
+                OtpRequest(email)
+            ).enqueue(object : Callback<OtpResponse> {
                 override fun onResponse(
                     call: Call<OtpResponse>,
                     response: Response<OtpResponse>
@@ -141,26 +147,29 @@ class UserViewModel(): ViewModel() {
                     try {
                         response.body()?.let {
                             val OtpId = it.otpId
-                            Log.d("OtpRequest",OtpId)
-                            _resultState.value = ResultState.Success("Success")
+                            Log.d("sendOtp", OtpId)
+                            _resultEmailState.value = ResultState.Success("Success")
                         }
                         response.errorBody()?.let {
                             try {
-                                val message = Gson().fromJson(it.string(), ErrorResponce::class.java)
-                            }
-                            catch (ex: Exception){
-
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java)
+                                _resultEmailState.value = ResultState.Error(message.toString())
+                            } catch (ex: Exception) {
+                                Log.e("sendOtp", "Failed to parse error response: ${ex.message}")
+                                _resultEmailState.value = ResultState.Error(ex.message.toString())
                             }
 
                         }
-                    }
-                    catch (ex: Exception){
-
+                    } catch (ex: Exception) {
+                        Log.e("SendOTP", ex.message.toString())
+                        _resultEmailState.value = ResultState.Error(ex.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<OtpResponse>, t: Throwable) {
-
+                    Log.e("sendOtp", t.message.toString())
+                    _resultEmailState.value = ResultState.Error(t.message.toString())
                 }
 
             })
@@ -170,4 +179,49 @@ class UserViewModel(): ViewModel() {
 
 
 
+
+    fun sigInWithOtp(password: String, otp: String) {
+        viewModelScope.launch {
+            _resultState.value = ResultState.Loading
+            apiService.signInWithOTP(
+                UserAuth(
+                    identity = otp,
+                    password = password
+                )
+            ).enqueue(object : Callback<AuthResponse> {
+                override fun onResponse(
+                    call: Call<AuthResponse>,
+                    response: Response<AuthResponse>
+                ) {
+                    try {
+                        response.body()?.let {
+                            val OtpId = it.token
+                            Log.d("SingInOtp", OtpId)
+                            _resultState.value = ResultState.Success("Success")
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java)
+                                _resultState.value = ResultState.Error(message.toString())
+                            } catch (ex: Exception) {
+                                Log.e("SingInOtp", "Failed to parse error response: ${ex.message}")
+                                _resultState.value = ResultState.Error(ex.message.toString())
+                            }
+
+                        }
+                    } catch (ex: Exception) {
+                        Log.e("SingInOtp", ex.message.toString())
+                        _resultState.value = ResultState.Error(ex.message.toString())
+                    }
+                }
+
+                override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                    Log.e("SingInOtp", t.message.toString())
+                    _resultState.value = ResultState.Error(t.message.toString())
+                }
+
+            })
+        }
+    }
 }

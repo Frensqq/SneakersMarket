@@ -14,10 +14,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.colorResource
@@ -27,14 +31,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
+import com.example.createinlager.domain.state.ResultState
+import com.example.createinlager.presentation.screen.viewModels.UserViewModel
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
 import com.example.createinlager.presentation.theme.ui.TitleAuth
 
 @Composable
-fun forgotPassword(navController: NavController){
+fun forgotPassword(navController: NavController, viewModel: UserViewModel = viewModel ()){
+
+    val result = viewModel.resultEmailState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize().background(colorResource(R.color.block))) {
 
@@ -71,7 +80,9 @@ fun forgotPassword(navController: NavController){
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Button(onClick = { },
+            Text(email.value)
+
+            Button(onClick = {viewModel.sendOTPCode("ly4dov.s@yandex.ru") },
                 modifier = Modifier
                     .padding(top = 24.dp)
                     .height(50.dp)
@@ -87,6 +98,32 @@ fun forgotPassword(navController: NavController){
             }
         }
     }
+
+    when (result.value) {
+        is ResultState.Error -> {
+            ErrorAunth((result.value as ResultState.Error).message, "Ошибка отправки Otp кода")
+        }
+        ResultState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize()
+                    .clip(RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
+
+            ) {
+                CircularProgressIndicator(modifier = Modifier.fillMaxSize(0.5f),
+                    strokeWidth = 10.dp,
+                    color = colorResource(R.color.accent))
+            }
+        }
+        ResultState.Initialized -> {
+        }
+        is ResultState.Success -> {
+
+            MassageEmail()
+            navController.navigate("SingIn")
+
+        }
+    }
 }
 
 @Composable
@@ -95,14 +132,19 @@ fun MassageEmail(){
     AlertDialog(
         onDismissRequest = { true },
         containerColor = Color.White,
+        modifier = Modifier.fillMaxWidth(),
         icon = {
-            Box(modifier = Modifier.size(40.dp))
-            Icon(
-                ImageBitmap.imageResource(R.drawable.email),
-                contentDescription = "Информация о приложении",
-                tint = Color(0xFF48B2E7),
-                modifier = Modifier.height(30.dp).width(30.dp)
-            )
+            Box(modifier = Modifier.size(44.dp).clip(RoundedCornerShape(100))
+                .background(colorResource(R.color.accent)),
+                contentAlignment = Alignment.Center) {
+                Icon(
+                    ImageBitmap.imageResource(R.drawable.email),
+                    contentDescription = "Информация о приложении",
+                    tint = colorResource(R.color.block),
+                    modifier = Modifier.size(24.dp)
+
+                )
+            }
         },
         title = {
             Text(
@@ -120,6 +162,7 @@ fun MassageEmail(){
                 style = TextOnBoardTypeSmall,
                 color = Color(0xff707B81),
                 modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
             )
         },
         confirmButton = {null}
