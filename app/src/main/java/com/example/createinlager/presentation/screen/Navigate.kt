@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.createinlager.presentation.screen.OnBoards.OnBoards
 import com.example.createinlager.presentation.screen.authentication.RegisterAcc
 import com.example.createinlager.presentation.screen.authentication.SingIn
+import com.example.createinlager.presentation.screen.authentication.Verification
 import com.example.createinlager.presentation.screen.authentication.forgotPassword
 
 @Composable
@@ -22,6 +23,12 @@ fun Navigate() {
         composable("RegisterAcc") { RegisterAcc(navController) }
         composable("SingIn") { SingIn(navController) }
         composable("forgotPassword") { forgotPassword(navController) }
+        composable("Verification/{email}/{otp}") {  backStackEntry ->
+            // Получаем переданный текст
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            val otp = backStackEntry.arguments?.getString("otp") ?: ""
+            Verification(email, otp, navController)
+        }
 
 
 

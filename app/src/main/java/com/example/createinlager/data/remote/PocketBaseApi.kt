@@ -3,6 +3,7 @@ package com.example.createinlager.data.remote
 import com.example.createinlager.data.model.AuthResponse
 import com.example.createinlager.data.model.OtpResponse
 import com.example.createinlager.data.model.UserResponse
+import com.example.createinlager.domain.model.OtpAuth
 import com.example.createinlager.domain.model.OtpRequest
 import com.example.createinlager.domain.model.UserAuth
 import com.example.createinlager.domain.model.UserRequest
@@ -30,7 +31,7 @@ interface PocketBaseApi {
     ///Вход по Otp коду
 
     @POST("/api/collections/users/auth-with-otp")
-    fun signInWithOTP(@Body request: UserAuth): Call<AuthResponse>
+    fun signInWithOTP(@Body request: OtpAuth): Call<AuthResponse>
 
 
 

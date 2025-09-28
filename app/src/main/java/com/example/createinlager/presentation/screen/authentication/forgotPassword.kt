@@ -19,6 +19,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,6 +46,8 @@ import com.example.createinlager.presentation.theme.ui.TitleAuth
 fun forgotPassword(navController: NavController, viewModel: UserViewModel = viewModel ()){
 
     val result = viewModel.resultEmailState.collectAsState()
+
+    val email = remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize().background(colorResource(R.color.block))) {
 
@@ -76,13 +80,11 @@ fun forgotPassword(navController: NavController, viewModel: UserViewModel = view
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            val email = textFieldAunth("xyz@gmail.com", true, 0)
+            email.value = textFieldAunth("xyz@gmail.com", true, 0).value
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Text(email.value)
-
-            Button(onClick = {viewModel.sendOTPCode("ly4dov.s@yandex.ru") },
+            Button(onClick = {viewModel.sendOTPCode(email.value) },
                 modifier = Modifier
                     .padding(top = 24.dp)
                     .height(50.dp)
@@ -97,33 +99,36 @@ fun forgotPassword(navController: NavController, viewModel: UserViewModel = view
                 Text("Отправить", style = ButtonText, color = colorResource(R.color.block))
             }
         }
-    }
+        when (result.value) {
+            is ResultState.Error -> {
+                ErrorAunth((result.value as ResultState.Error).message, "Ошибка отправки Otp кода")
+            }
+            ResultState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentAlignment = Alignment.Center
 
-    when (result.value) {
-        is ResultState.Error -> {
-            ErrorAunth((result.value as ResultState.Error).message, "Ошибка отправки Otp кода")
-        }
-        ResultState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize()
-                    .clip(RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.fillMaxSize(0.5f),
+                        strokeWidth = 10.dp,
+                        color = colorResource(R.color.accent))
+                }
+            }
+            ResultState.Initialized -> {
+            }
+            is ResultState.Success -> {
 
-            ) {
-                CircularProgressIndicator(modifier = Modifier.fillMaxSize(0.5f),
-                    strokeWidth = 10.dp,
-                    color = colorResource(R.color.accent))
+                val otp = viewModel.otpCode.value
+                MassageEmail()
+                navController.navigate("verification/${email.value}/$otp")
+
+
             }
         }
-        ResultState.Initialized -> {
-        }
-        is ResultState.Success -> {
-
-            MassageEmail()
-            navController.navigate("SingIn")
-
-        }
     }
+
+
 }
 
 @Composable

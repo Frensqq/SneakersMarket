@@ -240,7 +240,7 @@ fun buttonBack(navController: NavController,Road: String){
 @Composable
 fun textFieldAunth(prew: String, type: Boolean, Spacing:Int): MutableState<String> {
 
-    val text = remember{mutableStateOf("ly4dov.s@yandex.ru")}
+    val text = remember{mutableStateOf("")}
 
     OutlinedTextField(
         text.value,

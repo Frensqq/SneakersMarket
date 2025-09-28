@@ -10,6 +10,7 @@ import com.example.createinlager.data.model.ErrorResponce
 import com.example.createinlager.data.model.OtpResponse
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.remote.PocketBaseApiService
+import com.example.createinlager.domain.model.OtpAuth
 import com.example.createinlager.domain.model.OtpRequest
 import com.example.createinlager.domain.model.UserAuth
 import com.example.createinlager.domain.model.UserRequest
@@ -29,6 +30,9 @@ class UserViewModel(): ViewModel() {
     private val apiService = PocketBaseApiService.instance
     private val _user = mutableStateOf<UserResponse?>(null)
     val user: State<UserResponse?> get() = _user
+
+    private val _otpCode = mutableStateOf<String>("")
+    val otpCode: State<String>  = _otpCode
 
     private val _showSuccessDialog = MutableStateFlow(false)
     val showSuccessDialog: StateFlow<Boolean> = _showSuccessDialog
@@ -147,6 +151,7 @@ class UserViewModel(): ViewModel() {
                     try {
                         response.body()?.let {
                             val OtpId = it.otpId
+                            _otpCode.value = it.otpId
                             Log.d("sendOtp", OtpId)
                             _resultEmailState.value = ResultState.Success("Success")
                         }
@@ -184,9 +189,9 @@ class UserViewModel(): ViewModel() {
         viewModelScope.launch {
             _resultState.value = ResultState.Loading
             apiService.signInWithOTP(
-                UserAuth(
-                    identity = otp,
-                    password = password
+                OtpAuth(
+                    otp,
+                    password
                 )
             ).enqueue(object : Callback<AuthResponse> {
                 override fun onResponse(
