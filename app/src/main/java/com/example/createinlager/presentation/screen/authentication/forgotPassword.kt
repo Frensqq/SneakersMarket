@@ -38,8 +38,10 @@ import com.example.createinlager.R
 import com.example.createinlager.domain.state.ResultState
 import com.example.createinlager.presentation.screen.AccentLongButton
 import com.example.createinlager.presentation.screen.ErrorAunth
+import com.example.createinlager.presentation.screen.ErrorEmail
 import com.example.createinlager.presentation.screen.buttonBack
 import com.example.createinlager.presentation.screen.textFieldAunth
+import com.example.createinlager.presentation.screen.validateEmail
 import com.example.createinlager.presentation.screen.viewModels.UserViewModel
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
@@ -49,7 +51,7 @@ import com.example.createinlager.presentation.theme.ui.TitleAuth
 fun forgotPassword(navController: NavController, viewModel: UserViewModel = viewModel ()){
 
     val result = viewModel.resultEmailState.collectAsState()
-
+    var openDialog = remember { mutableStateOf(false) }
     val email = remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize().background(colorResource(R.color.block))) {
@@ -87,9 +89,14 @@ fun forgotPassword(navController: NavController, viewModel: UserViewModel = view
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            AccentLongButton({viewModel.sendOTPCode(email.value) }, "Отправить", true)
+            AccentLongButton({ if (validateEmail(email.value)) {viewModel.sendOTPCode(email.value)} else openDialog.value = true }, "Отправить", true)
 
         }
+
+        if (openDialog.value) {
+            openDialog.value = ErrorEmail(openDialog.value)
+        }
+
         when (result.value) {
             is ResultState.Error -> {
                 ErrorAunth((result.value as ResultState.Error).message, "Ошибка отправки Otp кода")

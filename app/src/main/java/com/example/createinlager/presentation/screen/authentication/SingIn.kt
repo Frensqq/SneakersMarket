@@ -11,26 +11,34 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
 import com.example.createinlager.domain.state.ResultState
 import com.example.createinlager.presentation.screen.AccentLongButton
 import com.example.createinlager.presentation.screen.ErrorAunth
+import com.example.createinlager.presentation.screen.ErrorEmail
 import com.example.createinlager.presentation.screen.buttonBack
 import com.example.createinlager.presentation.screen.nameTextField
 import com.example.createinlager.presentation.screen.passwordFieldAunth
 import com.example.createinlager.presentation.screen.textFieldAunth
+import com.example.createinlager.presentation.screen.validateEmail
 import com.example.createinlager.presentation.screen.viewModels.UserViewModel
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
 import com.example.createinlager.presentation.theme.ui.TitleAuth
@@ -41,6 +49,8 @@ import com.example.createinlager.presentation.theme.ui.miniTextButton
 fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel()){
 
     val result = viewModel.resultState.collectAsState()
+    var email = remember { mutableStateOf("") }
+    var openDialog = remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize().background(colorResource(R.color.white))) {
 
@@ -76,7 +86,7 @@ fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel())
 
             nameTextField("Email", 0, 12)
 
-            val email = textFieldAunth("xyz@gmail.com", true, 0)
+            email = textFieldAunth("xyz@gmail.com", true, 0)
 
             nameTextField("Пароль", 30, 12)
 
@@ -92,8 +102,7 @@ fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel())
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            AccentLongButton({ viewModel.SingIn(email.value, password.value)}, "Войти", true)
-
+            AccentLongButton({if (validateEmail(email.value)) {viewModel.SingIn(email.value, password.value)} else openDialog.value = true}, "Войти", true)
             Box(
                 modifier = Modifier.padding( bottom = 47.dp).fillMaxSize(),
                 contentAlignment = Alignment.BottomCenter
@@ -110,7 +119,13 @@ fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel())
                 }
             }
         }
+
     }
+
+    if (openDialog.value) {
+        openDialog.value = ErrorEmail(openDialog.value)
+    }
+
 
     when(result.value){
         ResultState.Loading -> {
@@ -133,12 +148,17 @@ fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel())
 
         }
         is ResultState.Success -> {
+
             navController.navigate("SingIn")
+
+
 
         }
 
 
     }
+
+
 
 
 

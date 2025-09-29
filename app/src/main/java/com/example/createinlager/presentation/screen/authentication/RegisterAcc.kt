@@ -42,10 +42,12 @@ import com.example.createinlager.R
 import com.example.createinlager.domain.state.ResultState
 import com.example.createinlager.presentation.screen.AccentLongButton
 import com.example.createinlager.presentation.screen.ErrorAunth
+import com.example.createinlager.presentation.screen.ErrorEmail
 import com.example.createinlager.presentation.screen.buttonBack
 import com.example.createinlager.presentation.screen.nameTextField
 import com.example.createinlager.presentation.screen.passwordFieldAunth
 import com.example.createinlager.presentation.screen.textFieldAunth
+import com.example.createinlager.presentation.screen.validateEmail
 import com.example.createinlager.presentation.screen.viewModels.UserViewModel
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
@@ -58,7 +60,7 @@ import com.example.createinlager.presentation.theme.ui.bottomText
 fun RegisterAcc(navController: NavController, viewModel: UserViewModel = viewModel()){
 
     val result = viewModel.resultState.collectAsState()
-
+    var openDialog = remember { mutableStateOf(false) }
     var checkBox by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize().background(colorResource(R.color.white))){
@@ -114,7 +116,7 @@ fun RegisterAcc(navController: NavController, viewModel: UserViewModel = viewMod
             }
             Spacer(modifier = Modifier.height(24.dp))
 
-            AccentLongButton({viewModel.Registration(name.value,email.value,password.value)}, "Зарегистрироваться",checkBox)
+            AccentLongButton({ if (validateEmail(email.value)) {viewModel.Registration(name.value,email.value,password.value)} else openDialog.value = true}, "Зарегистрироваться",checkBox)
 
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter){
 
@@ -125,6 +127,11 @@ fun RegisterAcc(navController: NavController, viewModel: UserViewModel = viewMod
                 }
             }
         }
+
+        if (openDialog.value) {
+            openDialog.value = ErrorEmail(openDialog.value)
+        }
+
         when (result.value) {
             is ResultState.Error -> {
                 ErrorAunth((result.value as ResultState.Error).message, "Ошибка Регистрации")
