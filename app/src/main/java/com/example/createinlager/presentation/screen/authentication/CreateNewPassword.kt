@@ -13,6 +13,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +27,7 @@ import com.example.createinlager.R
 import com.example.createinlager.domain.state.ResultState
 import com.example.createinlager.presentation.screen.AccentLongButton
 import com.example.createinlager.presentation.screen.ErrorAunth
+import com.example.createinlager.presentation.screen.ErrorEmail
 import com.example.createinlager.presentation.screen.buttonBack
 import com.example.createinlager.presentation.screen.nameTextField
 import com.example.createinlager.presentation.screen.passwordFieldAunth
@@ -34,6 +37,8 @@ import com.example.createinlager.presentation.theme.ui.TitleAuth
 
 @Composable
 fun CreateNewPassword(userId: String,token: String, navController: NavController, viewModel: UserViewModel = viewModel()){
+
+    var openDialog = remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize().background(colorResource(R.color.white)).padding(horizontal = 20.dp)) {
 
@@ -77,15 +82,19 @@ fun CreateNewPassword(userId: String,token: String, navController: NavController
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        AccentLongButton({
+        AccentLongButton({ if (password.value == confirmPassword.value){
             viewModel.passwordUpdate(
                 oldPassword.value,
                 token,
                 password.value,
                 confirmPassword.value,
                 userId
-            )
+            )} else  openDialog.value = true
         }, "Сохранить", true)
+    }
+
+    if (openDialog.value) {
+        openDialog.value = ErrorEmail(openDialog.value,"Введенные пароли несовпадают", "попробуйте ввести ещё раз")
     }
 
     val result = viewModel.resultState.collectAsState()

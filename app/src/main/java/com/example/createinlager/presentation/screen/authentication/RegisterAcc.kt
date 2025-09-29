@@ -129,7 +129,7 @@ fun RegisterAcc(navController: NavController, viewModel: UserViewModel = viewMod
         }
 
         if (openDialog.value) {
-            openDialog.value = ErrorEmail(openDialog.value)
+            openDialog.value = ErrorEmail(openDialog.value,"Введен некоректный email", "попробуйте ввести ещё раз")
         }
 
         when (result.value) {

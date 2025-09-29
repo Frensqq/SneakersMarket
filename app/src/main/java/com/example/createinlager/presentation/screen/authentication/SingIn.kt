@@ -51,6 +51,7 @@ fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel())
     val result = viewModel.resultState.collectAsState()
     var email = remember { mutableStateOf("") }
     var openDialog = remember { mutableStateOf(false) }
+    var openDialogTwo = remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize().background(colorResource(R.color.white))) {
 
@@ -102,7 +103,14 @@ fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel())
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            AccentLongButton({if (validateEmail(email.value)) {viewModel.SingIn(email.value, password.value)} else openDialog.value = true}, "Войти", true)
+
+
+
+            AccentLongButton({if (email.value.isNotEmpty() and password.value.isNotEmpty())
+            {if (validateEmail(email.value))
+            {viewModel.SingIn(email.value, password.value)}
+            else openDialog.value = true}
+            else openDialogTwo.value = true}, "Войти", true)
             Box(
                 modifier = Modifier.padding( bottom = 47.dp).fillMaxSize(),
                 contentAlignment = Alignment.BottomCenter
@@ -123,7 +131,10 @@ fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel())
     }
 
     if (openDialog.value) {
-        openDialog.value = ErrorEmail(openDialog.value)
+        openDialog.value = ErrorEmail(openDialog.value, "Введен некоректный email", "попробуйте ввести ещё раз")
+    }
+    if (openDialogTwo.value) {
+        openDialogTwo.value = ErrorEmail(openDialogTwo.value, "Необходимо заполнить все поля","Пожалуйства заполните все поля" )
     }
 
 

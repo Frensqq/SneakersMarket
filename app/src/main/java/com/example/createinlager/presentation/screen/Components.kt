@@ -232,19 +232,19 @@ fun AccentLongButton(click:() -> Unit, text: String, state: Boolean){
 
 fun validateEmail(email: String): Boolean{
 
-    val validEmail = "^[a-z0-9]+@[a-z0-9]+\\.[a-z]{2,}$".toRegex()
+    val validEmail = "^[a-z0-9]+(\\.[a-z0-9]+)*@[a-z0-9]+\\.[a-z]{2,}$".toRegex()
 
     return email.matches(validEmail)
 }
 
 @Composable
-fun ErrorEmail(open: Boolean): Boolean{
+fun ErrorEmail(open: Boolean, Tilte: String, text: String): Boolean{
 
     var openDialog = remember { mutableStateOf(open) }
     AlertDialog(
         onDismissRequest = { openDialog.value= false},
-        title = { Text(text = "Введен некорректный email") },
-        text = { Text("Попробуйте ввести еще раз") },
+        title = { Text(text = Tilte) },
+        text = { Text(text) },
         confirmButton = {
             Button({ openDialog.value = false }) {
                 Text("OK", fontSize = 22.sp)
