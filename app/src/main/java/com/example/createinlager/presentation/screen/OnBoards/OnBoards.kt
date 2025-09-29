@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.createinlager.R
+import com.example.createinlager.presentation.screen.WhiteButton
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextOnBoardType
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
@@ -143,22 +144,18 @@ fun OnBoards(navController: NavController) {
             }
         }
 
-        Box(
-            modifier = Modifier.padding(top = 100.dp, bottom = 36.dp, start = 20.dp, end = 20.dp)
-                .fillMaxSize(), contentAlignment = Alignment.BottomCenter
-        ) {
-
-            Button(
-                onClick = {if (status>=2) navController.navigate("RegisterAcc")
-                    if (status!=2)status = status + 1},
-                modifier = Modifier.height(50.dp).fillMaxWidth(),
-                shape = RoundedCornerShape(13.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.block),
-                )
-            ) {
-                Text("Начать", style = ButtonText, color = colorResource(R.color.text))
-            }
-        }
+        WhiteButton({if (status>=2) navController.navigate("RegisterAcc")
+            if (status!=2) status = status + 1}
+            ,if (status == 0)"Начать" else "Далее")
     }
 }
+
+fun testComp(stat:Int, navController: NavController){
+
+    var status = stat
+
+    if (status>=2) navController.navigate("RegisterAcc")
+    if (status!=2) status = status + 1
+
+}
+

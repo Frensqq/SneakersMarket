@@ -1,7 +1,6 @@
 package com.example.createinlager.presentation.screen.authentication
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,15 +14,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,12 +43,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
+import com.example.createinlager.domain.state.ResultState
+import com.example.createinlager.presentation.screen.ErrorAunth
+import com.example.createinlager.presentation.screen.buttonBack
+import com.example.createinlager.presentation.screen.nameTextField
 import com.example.createinlager.presentation.screen.viewModels.UserViewModel
-import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
 import com.example.createinlager.presentation.theme.ui.TitleAuth
-import com.example.createinlager.presentation.theme.ui.bottomText
-import com.example.createinlager.presentation.theme.ui.miniTextButton
 
 @Composable
 fun Verification(email:String, otpId:String, navController: NavController, viewModel: UserViewModel = viewModel()){
@@ -90,7 +89,7 @@ fun Verification(email:String, otpId:String, navController: NavController, viewM
 
             nameTextField("OTP Код", 0, 20)
 
-            TextFieldOtp(currentOtpCode)
+            TextFieldOtp(currentOtpCode, navController)
 
             val temp = CountdownTimer(email)
             if (temp.isNotEmpty()) currentOtpCode = temp
@@ -101,10 +100,12 @@ fun Verification(email:String, otpId:String, navController: NavController, viewM
 }
 
 @Composable
-fun TextFieldOtp(otp: String, viewModel: UserViewModel = viewModel()){
+fun TextFieldOtp(otp: String,navController: NavController, viewModel: UserViewModel = viewModel()){
 
     var codes by remember { mutableStateOf(List(6) { "" }) }
     val focusManager = LocalFocusManager.current
+
+    val result = viewModel.resultState.collectAsState()
 
     LazyRow{
         items(6) {index ->
@@ -145,13 +146,48 @@ fun TextFieldOtp(otp: String, viewModel: UserViewModel = viewModel()){
                     imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(onNext ={if (index == 5) {
-
                     viewModel.sigInWithOtp(codes.joinToString(""),otp)
                 } }),
                 singleLine = true,
             )
         }
     }
+
+    when (result.value) {
+        is ResultState.Error -> {
+            ErrorAunth((result.value as ResultState.Error).message, "Ошибка отправки Otp кода")
+        }
+        ResultState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize()
+                    .clip(RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
+
+            ) {
+                CircularProgressIndicator(modifier = Modifier.fillMaxSize(0.5f),
+                    strokeWidth = 10.dp,
+                    color = colorResource(R.color.accent))
+            }
+        }
+        ResultState.Initialized -> {
+        }
+        is ResultState.Success -> {
+
+            val userData = viewModel.user.value
+            val token = viewModel.token.value
+            val otp = viewModel.otpCode.value
+
+            if(userData != null){
+                navController.navigate("CreateNewPassword/${userData.id}/${token}")
+            }
+
+            MassageEmail()
+
+
+
+        }
+    }
+
 }
 
 @Composable

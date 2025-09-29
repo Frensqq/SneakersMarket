@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -37,6 +36,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
 import com.example.createinlager.domain.state.ResultState
+import com.example.createinlager.presentation.screen.AccentLongButton
+import com.example.createinlager.presentation.screen.ErrorAunth
+import com.example.createinlager.presentation.screen.buttonBack
+import com.example.createinlager.presentation.screen.textFieldAunth
 import com.example.createinlager.presentation.screen.viewModels.UserViewModel
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
@@ -84,20 +87,8 @@ fun forgotPassword(navController: NavController, viewModel: UserViewModel = view
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Button(onClick = {viewModel.sendOTPCode(email.value) },
-                modifier = Modifier
-                    .padding(top = 24.dp)
-                    .height(50.dp)
-                    .fillMaxSize(),
-                shape = RoundedCornerShape(13.dp),
-                colors = ButtonDefaults.buttonColors(
-                    disabledContainerColor = colorResource(R.color.disable),
-                    containerColor = colorResource(R.color.accent),
-                    contentColor = colorResource(R.color.block)
-                )
-            ){
-                Text("Отправить", style = ButtonText, color = colorResource(R.color.block))
-            }
+            AccentLongButton({viewModel.sendOTPCode(email.value) }, "Отправить", true)
+
         }
         when (result.value) {
             is ResultState.Error -> {

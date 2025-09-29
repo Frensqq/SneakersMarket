@@ -14,59 +14,44 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
 import com.example.createinlager.domain.state.ResultState
+import com.example.createinlager.presentation.screen.AccentLongButton
+import com.example.createinlager.presentation.screen.ErrorAunth
+import com.example.createinlager.presentation.screen.buttonBack
+import com.example.createinlager.presentation.screen.nameTextField
+import com.example.createinlager.presentation.screen.passwordFieldAunth
+import com.example.createinlager.presentation.screen.textFieldAunth
 import com.example.createinlager.presentation.screen.viewModels.UserViewModel
 import com.example.createinlager.presentation.theme.ui.ButtonText
-import com.example.createinlager.presentation.theme.ui.TextFieldPlace
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
 import com.example.createinlager.presentation.theme.ui.TextUnderLine
 import com.example.createinlager.presentation.theme.ui.TitleAuth
 import com.example.createinlager.presentation.theme.ui.bottomText
-import com.example.createinlager.presentation.theme.ui.nameTextField
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -81,7 +66,7 @@ fun RegisterAcc(navController: NavController, viewModel: UserViewModel = viewMod
 
             Spacer(modifier = Modifier.height(63.dp))
 
-            buttonBack(navController,"OnBoards")
+            buttonBack(navController, "OnBoards")
 
             Spacer(modifier = Modifier.height(11.dp))
 
@@ -93,15 +78,15 @@ fun RegisterAcc(navController: NavController, viewModel: UserViewModel = viewMod
 
             Spacer(modifier = Modifier.height(54.dp))
 
-            nameTextField("Ваше Имя",0,12)
+            nameTextField("Ваше Имя", 0, 12)
 
             val name = textFieldAunth("xxxxxxxxx", false, 2)
 
-            nameTextField("Email",12,12)
+            nameTextField("Email", 12, 12)
 
             val email = textFieldAunth("xyz@gmail.com", true, 0)
 
-            nameTextField("Пароль",12,12)
+            nameTextField("Пароль", 12, 12)
 
             val password = passwordFieldAunth("*******")
 
@@ -127,24 +112,9 @@ fun RegisterAcc(navController: NavController, viewModel: UserViewModel = viewMod
                     modifier = Modifier.clickable { context.startActivity(intent) }
                 )
             }
-            Spacer(modifier = Modifier.width(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            Button(onClick = { viewModel.Registration(name.value,email.value,password.value)},
-                enabled = checkBox,
-                modifier = Modifier
-                    .padding(top = 24.dp)
-                    .height(50.dp)
-                    .fillMaxSize(),
-                shape = RoundedCornerShape(13.dp),
-                colors = ButtonDefaults.buttonColors(
-                    disabledContainerColor = colorResource(R.color.disable),
-                    containerColor = colorResource(R.color.accent),
-                    contentColor = colorResource(R.color.block)
-                )
-            ){
-                Text("Зарегистрироваться", style = ButtonText, color = colorResource(R.color.block))
-            }
-
+            AccentLongButton({viewModel.Registration(name.value,email.value,password.value)}, "Зарегистрироваться",checkBox)
 
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter){
 
@@ -180,146 +150,4 @@ fun RegisterAcc(navController: NavController, viewModel: UserViewModel = viewMod
             }
         }
     }
-
-
-}
-
-
-@Composable
-fun ErrorAunth(RegError: String, TypeErroe: String){
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-
-    LaunchedEffect(Unit) {
-        scope.launch {
-            snackbarHostState.showSnackbar(
-                message = TypeErroe+"\n"+RegError,
-                duration = SnackbarDuration.Long
-            )
-        }
-    }
-
-
-    SnackbarHost(
-        hostState = snackbarHostState,
-        snackbar = { data ->
-            Snackbar(
-                containerColor = colorResource(R.color.accent),
-                contentColor = Color.White,
-                content = { Text(data.visuals.message, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center) },
-                modifier = Modifier.padding(20.dp).fillMaxWidth(),
-                shape = RoundedCornerShape(13.dp),
-                )
-        }
-    )
-}
-
-
-
-
-@Composable
-fun buttonBack(navController: NavController,Road: String){
-    Box(modifier = Modifier.size(44.dp).clip(RoundedCornerShape(40.dp)).background(colorResource(R.color.hint)), contentAlignment = Alignment.CenterStart) {
-        IconButton(
-            onClick = { navController.navigate(Road) },
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(colorResource(R.color.background))
-        ) {
-            Icon(
-                bitmap = ImageBitmap.imageResource(R.drawable.back),
-                contentDescription = "Назад",
-                modifier = Modifier.fillMaxWidth(),
-                tint = colorResource(R.color.text)
-            )
-        }
-    }
-}
-
-
-@Composable
-fun textFieldAunth(prew: String, type: Boolean, Spacing:Int): MutableState<String> {
-
-    val text = remember{mutableStateOf("")}
-
-    OutlinedTextField(
-        text.value,
-        {text.value = it},
-        textStyle = TextStyle(fontSize =  14.sp),
-        singleLine = true,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor= colorResource(R.color.accent),
-            unfocusedBorderColor = colorResource(R.color.darkWhite) ,
-            focusedContainerColor = colorResource(R.color.background),
-            unfocusedContainerColor = colorResource(R.color.background),
-            unfocusedTextColor = colorResource(R.color.hint),
-            focusedTextColor = colorResource(R.color.text)
-        ),
-        keyboardOptions = KeyboardOptions(keyboardType = if (type){KeyboardType.Email} else {
-            KeyboardType.Text}),
-        placeholder = { Box {Text(prew, style = TextFieldPlace, letterSpacing = Spacing.sp, color =  colorResource(R.color.hint))} },
-        shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.height(50.dp).fillMaxWidth(),)
-
-    return text
-}
-
-@Composable
-fun passwordFieldAunth(prew: String): MutableState<String> {
-
-    val password = remember{mutableStateOf("")}
-    var passwordVisibility: Boolean by remember { mutableStateOf(false) }
-
-    val IconIf: Int
-    if (passwordVisibility){
-        IconIf  =R.drawable.eyeopen }
-    else {
-        IconIf = R.drawable.eyeclose
-    }
-
-    OutlinedTextField(
-        password.value, { password.value = it },
-        textStyle = TextStyle(fontSize = 14.sp),
-        singleLine = true,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorResource(R.color.accent),
-            unfocusedBorderColor = colorResource(R.color.darkWhite),
-            focusedContainerColor = colorResource(R.color.background),
-            unfocusedContainerColor = colorResource(R.color.background),
-            unfocusedTextColor = colorResource(R.color.hint),
-            focusedTextColor = colorResource(R.color.text)
-
-        ),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        placeholder = { Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-            for(i in 0..8){
-                Box(modifier = Modifier.padding(start = 3.dp).size(6.dp).clip(RoundedCornerShape(3.dp)).background(colorResource(R.color.hint))) {  }
-            }
-        } },
-        shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.height(50.dp)
-            .fillMaxWidth(),
-
-
-        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-        trailingIcon = {
-            IconButton(onClick = { passwordVisibility = !passwordVisibility })
-            {
-                Icon(
-                    ImageBitmap.imageResource(IconIf),
-                    contentDescription = "Скрытие пароля",
-                    modifier = Modifier.fillMaxSize(0.5f),
-                    tint = if (passwordVisibility) Color(0xFF48B2E7) else Color(0xff6A6A6A)
-                )
-            }
-        }
-    )
-    return password
-}
-
-@Composable
-fun nameTextField(text: String, topdp:Int,bottomdp:Int){
-
-    Text(text, style = nameTextField, textAlign = TextAlign.Start,color = colorResource(R.color.text), modifier = Modifier.padding(top = topdp.dp, bottom = bottomdp.dp))
-
 }

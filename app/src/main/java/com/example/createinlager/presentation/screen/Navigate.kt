@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.createinlager.presentation.screen.OnBoards.OnBoards
+import com.example.createinlager.presentation.screen.authentication.CreateNewPassword
 import com.example.createinlager.presentation.screen.authentication.RegisterAcc
 import com.example.createinlager.presentation.screen.authentication.SingIn
 import com.example.createinlager.presentation.screen.authentication.Verification
@@ -29,6 +30,10 @@ fun Navigate() {
             val otp = backStackEntry.arguments?.getString("otp") ?: ""
             Verification(email, otp, navController)
         }
+        composable("CreateNewPassword/{userId}/{token}") {backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")?: ""
+            val token =  backStackEntry.arguments?.getString("token")?: ""
+            CreateNewPassword(userId,token,  navController) }
 
 
 

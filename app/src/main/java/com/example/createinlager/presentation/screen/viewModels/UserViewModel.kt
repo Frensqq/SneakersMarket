@@ -10,12 +10,12 @@ import com.example.createinlager.data.model.ErrorResponce
 import com.example.createinlager.data.model.OtpResponse
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.remote.PocketBaseApiService
+import com.example.createinlager.domain.model.ChangePassRequest
 import com.example.createinlager.domain.model.OtpAuth
 import com.example.createinlager.domain.model.OtpRequest
 import com.example.createinlager.domain.model.UserAuth
 import com.example.createinlager.domain.model.UserRequest
 import com.example.createinlager.domain.state.ResultState
-import com.example.createinlager.presentation.screen.authentication.ErrorAunth
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +33,9 @@ class UserViewModel(): ViewModel() {
 
     private val _otpCode = mutableStateOf<String>("")
     val otpCode: State<String>  = _otpCode
+
+    private val _token = mutableStateOf<String>("")
+    val token: State<String>  = _token
 
     private val _showSuccessDialog = MutableStateFlow(false)
     val showSuccessDialog: StateFlow<Boolean> = _showSuccessDialog
@@ -182,9 +185,6 @@ class UserViewModel(): ViewModel() {
 
     }
 
-
-
-
     fun sigInWithOtp(password: String, otp: String) {
         viewModelScope.launch {
             _resultState.value = ResultState.Loading
@@ -201,6 +201,8 @@ class UserViewModel(): ViewModel() {
                     try {
                         response.body()?.let {
                             val OtpId = it.token
+                            _user.value = it.record
+                            _token.value = it.token
                             Log.d("SingInOtp", OtpId)
                             _resultState.value = ResultState.Success("Success")
                         }
@@ -228,5 +230,54 @@ class UserViewModel(): ViewModel() {
 
             })
         }
+    }
+
+    fun passwordUpdate( oldPassword:String, token:String, password:String, passwordConfirm:String, userId:String){
+        viewModelScope.launch {
+            _resultState.value = ResultState.Loading
+            apiService.changePassword(
+                userId,
+                token,
+                ChangePassRequest(
+                    oldPassword,
+                    password,
+                    passwordConfirm
+                )
+            ).enqueue(object : Callback<UserResponse> {
+                override fun onResponse(
+                    call: Call<UserResponse>,
+                    response: Response<UserResponse>
+                ) {
+                    try {
+                        response.body()?.let {
+                            val OtpId = it.id
+                            Log.d("PasswordUpdate", OtpId)
+                            _resultState.value = ResultState.Success("Success")
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java)
+                                _resultState.value = ResultState.Error(message.toString())
+                            } catch (ex: Exception) {
+                                Log.e("PasswordUpdate", "Failed to parse error response: ${ex.message}")
+                                _resultState.value = ResultState.Error(ex.message.toString())
+                            }
+
+                        }
+                    } catch (ex: Exception) {
+                        Log.e("PasswordUpdate", ex.message.toString())
+                        _resultState.value = ResultState.Error(ex.message.toString())
+                    }
+                }
+
+                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                    Log.e("PasswordUpdate", t.message.toString())
+                    _resultState.value = ResultState.Error(t.message.toString())
+                }
+
+            })
+        }
+
     }
 }

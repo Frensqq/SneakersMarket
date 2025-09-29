@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,8 +25,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
 import com.example.createinlager.domain.state.ResultState
+import com.example.createinlager.presentation.screen.AccentLongButton
+import com.example.createinlager.presentation.screen.ErrorAunth
+import com.example.createinlager.presentation.screen.buttonBack
+import com.example.createinlager.presentation.screen.nameTextField
+import com.example.createinlager.presentation.screen.passwordFieldAunth
+import com.example.createinlager.presentation.screen.textFieldAunth
 import com.example.createinlager.presentation.screen.viewModels.UserViewModel
-import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
 import com.example.createinlager.presentation.theme.ui.TitleAuth
 import com.example.createinlager.presentation.theme.ui.bottomText
@@ -87,22 +90,9 @@ fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel())
                 style = miniTextButton
             )
 
+            Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                onClick = { viewModel.SingIn(email.value, password.value)},
-                modifier = Modifier
-                    .padding(top = 24.dp)
-                    .height(50.dp)
-                    .fillMaxSize(),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    disabledContainerColor = colorResource(R.color.disable),
-                    containerColor = colorResource(R.color.accent),
-                    contentColor = colorResource(R.color.block)
-                )
-            ) {
-                Text("Войти", style = ButtonText, color = colorResource(R.color.block))
-            }
+            AccentLongButton({ viewModel.SingIn(email.value, password.value)}, "Войти", true)
 
             Box(
                 modifier = Modifier.padding( bottom = 47.dp).fillMaxSize(),
