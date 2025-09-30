@@ -160,9 +160,13 @@ fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel())
         }
         is ResultState.Success -> {
 
-            navController.navigate("SingIn")
+            val userData = viewModel.user.value
+            val token = viewModel.token.value
 
 
+            if(userData != null){
+                navController.navigate("Home/${userData.id}/${token}")
+            }
 
         }
 

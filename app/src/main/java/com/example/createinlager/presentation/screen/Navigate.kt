@@ -10,6 +10,7 @@ import com.example.createinlager.presentation.screen.authentication.RegisterAcc
 import com.example.createinlager.presentation.screen.authentication.SingIn
 import com.example.createinlager.presentation.screen.authentication.Verification
 import com.example.createinlager.presentation.screen.authentication.forgotPassword
+import com.example.createinlager.presentation.screen.markets.Home
 
 @Composable
 fun Navigate() {
@@ -34,6 +35,10 @@ fun Navigate() {
             val userId = backStackEntry.arguments?.getString("userId")?: ""
             val token =  backStackEntry.arguments?.getString("token")?: ""
             CreateNewPassword(userId,token,  navController) }
+        composable("Home/{userId}/{token}") {backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userIdToHome")?: ""
+            val token =  backStackEntry.arguments?.getString("tokenToHome")?: ""
+            Home(userId,token,  navController) }
 
 
 

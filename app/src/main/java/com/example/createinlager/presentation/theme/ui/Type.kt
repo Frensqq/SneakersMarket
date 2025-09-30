@@ -145,4 +145,13 @@ val miniTextButton = TextStyle(
     letterSpacing = 0.sp,
 )
 
+val textInFiedMarket = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 12.sp,
+    lineHeight = 14.sp,
+    letterSpacing = 0.sp,
+)
+
+
 

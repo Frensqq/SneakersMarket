@@ -112,6 +112,8 @@ class UserViewModel(): ViewModel() {
                     try {
                         response.body()?.let {
                             val token = it.token
+                            _token.value = it.token
+                            _user.value = it.record
                             Log.d("SingIn", token)
                             _resultState.value = ResultState.Success("Success")
                         }
