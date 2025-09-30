@@ -143,7 +143,6 @@ fun MassageEmail(){
                     contentDescription = "Информация о приложении",
                     tint = colorResource(R.color.block),
                     modifier = Modifier.size(24.dp)
-
                 )
             }
         },

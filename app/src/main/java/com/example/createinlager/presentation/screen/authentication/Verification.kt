@@ -177,14 +177,13 @@ fun TextFieldOtp(otp: String,navController: NavController, viewModel: UserViewMo
             val token = viewModel.token.value
             val otp = viewModel.otpCode.value
 
+
+
             if(userData != null){
                 navController.navigate("CreateNewPassword/${userData.id}/${token}")
             }
 
-            MassageEmail()
-
-
-
+            //MassageEmail()
         }
     }
 

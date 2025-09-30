@@ -43,12 +43,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.createinlager.R
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
+import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
+import com.example.createinlager.presentation.theme.ui.TitleType
 import com.example.createinlager.presentation.theme.ui.nameTextField
 import kotlinx.coroutines.launch
 
@@ -74,7 +77,9 @@ fun textFieldAunth(prew: String, type: Boolean, Spacing:Int): MutableState<Strin
             KeyboardType.Text}),
         placeholder = { Box {Text(prew, style = TextFieldPlace, letterSpacing = Spacing.sp, color =  colorResource(R.color.hint))} },
         shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.height(50.dp).fillMaxWidth(),)
+        modifier = Modifier
+            .height(50.dp)
+            .fillMaxWidth(),)
 
     return text
 }
@@ -108,11 +113,16 @@ fun passwordFieldAunth(prew: String): MutableState<String> {
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         placeholder = { Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             for(i in 0..8){
-                Box(modifier = Modifier.padding(start = 3.dp).size(6.dp).clip(RoundedCornerShape(3.dp)).background(colorResource(R.color.hint))) {  }
+                Box(modifier = Modifier
+                    .padding(start = 3.dp)
+                    .size(6.dp)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(colorResource(R.color.hint))) {  }
             }
         } },
         shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.height(50.dp)
+        modifier = Modifier
+            .height(50.dp)
             .fillMaxWidth(),
 
 
@@ -135,7 +145,10 @@ fun passwordFieldAunth(prew: String): MutableState<String> {
 
 @Composable
 fun buttonBack(navController: NavController,Road: String){
-    Box(modifier = Modifier.size(44.dp).clip(RoundedCornerShape(40.dp)).background(colorResource(R.color.hint)), contentAlignment = Alignment.CenterStart) {
+    Box(modifier = Modifier
+        .size(44.dp)
+        .clip(RoundedCornerShape(40.dp))
+        .background(colorResource(R.color.hint)), contentAlignment = Alignment.CenterStart) {
         IconButton(
             onClick = { navController.navigate(Road) },
             modifier = Modifier
@@ -181,7 +194,9 @@ fun ErrorAunth(RegError: String, TypeErroe: String){
                 containerColor = colorResource(R.color.accent),
                 contentColor = Color.White,
                 content = { Text(data.visuals.message, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center) },
-                modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
                 shape = RoundedCornerShape(13.dp),
             )
         }
@@ -191,13 +206,16 @@ fun ErrorAunth(RegError: String, TypeErroe: String){
 @Composable
 fun WhiteButton(click:() -> Unit, text: String){
     Box(
-        modifier = Modifier.padding(top = 100.dp, bottom = 36.dp, start = 20.dp, end = 20.dp)
+        modifier = Modifier
+            .padding(top = 100.dp, bottom = 36.dp, start = 20.dp, end = 20.dp)
             .fillMaxSize(), contentAlignment = Alignment.BottomCenter
     ) {
 
         Button(
             onClick = click,
-            modifier = Modifier.height(50.dp).fillMaxWidth(),
+            modifier = Modifier
+                .height(50.dp)
+                .fillMaxWidth(),
             shape = RoundedCornerShape(13.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.block),
@@ -239,14 +257,22 @@ fun ErrorEmail(open: Boolean, Tilte: String, text: String): Boolean{
     var openDialog = remember { mutableStateOf(open) }
     AlertDialog(
         onDismissRequest = { openDialog.value= false},
-        title = { Text(text = Tilte) },
-        text = { Text(text) },
+        title = { Text(text = Tilte, style = nameTextField, textAlign =  TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
+        text = { Text(text, style = TextOnBoardTypeSmall, textAlign =  TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
+        modifier = Modifier.fillMaxWidth(),
         confirmButton = {
-            Button({ openDialog.value = false }) {
-                Text("OK", fontSize = 22.sp)
-            }
-        }
+            AccentLongButton({ openDialog.value = false }, "OK",true)
+        },
+        textContentColor = colorResource(R.color.text),
     )
 
     return openDialog.value
+}
+
+@Preview
+@Composable
+fun testErrorEmail(){
+
+    ErrorEmail(true,"Введен некоректный email", "попробуйте ввести ещё раз")
+
 }
