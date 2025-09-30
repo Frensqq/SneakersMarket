@@ -26,8 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,12 +47,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.createinlager.R
-import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
 import com.example.createinlager.presentation.theme.ui.nameTextField
 import kotlinx.coroutines.launch
-import kotlin.collections.map
 
 @Composable
 fun textFieldAunth(prew: String, type: Boolean, Spacing:Int): MutableState<String> {
@@ -254,5 +250,3 @@ fun ErrorEmail(open: Boolean, Tilte: String, text: String): Boolean{
 
     return openDialog.value
 }
-
-
