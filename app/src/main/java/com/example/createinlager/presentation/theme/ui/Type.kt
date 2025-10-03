@@ -153,5 +153,12 @@ val textInFiedMarket = TextStyle(
     letterSpacing = 0.sp,
 )
 
+val textCategory = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 1.sp,
+)
 
 
