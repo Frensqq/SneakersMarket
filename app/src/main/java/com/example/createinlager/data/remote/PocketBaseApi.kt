@@ -2,6 +2,7 @@ package com.example.createinlager.data.remote
 
 import com.example.createinlager.data.model.AuthResponse
 import com.example.createinlager.data.model.OtpResponse
+import com.example.createinlager.data.model.SneakersView
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.domain.model.ChangePassRequest
 import com.example.createinlager.domain.model.OtpAuth
@@ -10,10 +11,12 @@ import com.example.createinlager.domain.model.UserAuth
 import com.example.createinlager.domain.model.UserRequest
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface PocketBaseApi {
 
@@ -39,6 +42,11 @@ interface PocketBaseApi {
 
     @PATCH("/api/collections/users/records/{userId}")
     fun changePassword(@Path("userId") userId: String, @Header("Authorization") token: String, @Body request: ChangePassRequest ): Call<UserResponse>
+
+    //Вывод товаров
+
+    @GET("/api/collections/sneakers/records")
+    fun ViewSneakers(@Query("filter") filter: String, @Query("sort") sort: String, @Query("perPage") perPage: Int ): Call<SneakersView>
 
 
 

@@ -21,6 +21,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,16 +36,38 @@ import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
+import com.example.createinlager.data.ConverToArrayArray
+import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.presentation.screen.nameTextField
+import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
 import com.example.createinlager.presentation.theme.ui.TitleAuth
 import com.example.createinlager.presentation.theme.ui.miniTextButton
 
 @Composable
-fun Home(userId: String, token:String, navController: NavController){
+fun Home(userId: String, token:String, navController: NavController, viewModel: MarketViewModel = viewModel()){
 
-    Box(        modifier = Modifier.fillMaxSize().background(colorResource(R.color.background))) {
+    var isInitialized by remember { mutableStateOf(false) }
+
+    viewModel.SneakersImport("id!='null'", "+created", 2)
+
+    LaunchedEffect(Unit) {
+        if (!isInitialized) {
+
+            //ClassSnekers.value = viewModel.sneakersList.value
+            isInitialized = true
+
+        }
+    }
+
+    val ClassSnekers = viewModel.sneakers.collectAsState()
+
+    val ListSneakers = ConverToArrayArray(ClassSnekers)
+
+
+    Box(modifier = Modifier.fillMaxSize().background(colorResource(R.color.background))) {
 
         Column(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
@@ -121,12 +149,17 @@ fun Home(userId: String, token:String, navController: NavController){
 
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
 
-                    nameTextField("Категории", 0, 0)
+                    nameTextField("Популярное", 0, 0)
 
                     Text("Все", style = miniTextButton, color = colorResource(R.color.accent))
                 }
 
                 Spacer(modifier = Modifier.height(34.dp))
+
+                if (ClassSnekers.value.isNotEmpty()) {
+                    columnProducts(ListSneakers)
+                }
+
 
                 Spacer(modifier = Modifier.height(29.dp))
 
@@ -138,6 +171,9 @@ fun Home(userId: String, token:String, navController: NavController){
                 }
 
                 Spacer(modifier = Modifier.height(19.dp))
+
+
+
 
 
             }

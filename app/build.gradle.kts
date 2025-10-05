@@ -59,6 +59,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation ("com.squareup.retrofit2:retrofit:2.9.0") // Подключаем саму библиотеку Retrofit
+    implementation("io.coil-kt:coil-compose:2.7.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // Подключаем конвертер для работы с JSON
     implementation("androidx.navigation:navigation-compose")
 }
