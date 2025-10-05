@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.createinlager.data.model.ErrorResponce
+import com.example.createinlager.data.model.FavoriteList
+import com.example.createinlager.data.model.FavoriteResponse
 import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.data.model.SneakersView
 import com.example.createinlager.data.model.UserResponse
@@ -30,8 +32,13 @@ class MarketViewModel: ViewModel() {
     private val _SneakersList = mutableStateOf<List<Sneakers>>(emptyList())
     val sneakersList: State<List<Sneakers>>  = _SneakersList
 
+
+
     private val _sneakers = MutableStateFlow<List<Sneakers>>(emptyList())
     val sneakers: StateFlow<List<Sneakers>> get() = _sneakers.asStateFlow()
+
+    private val _favorites = MutableStateFlow<List<FavoriteResponse>>(emptyList())
+    val favorites: StateFlow<List<FavoriteResponse>> get() = _favorites.asStateFlow()
 
 
     fun getImage(collectionId:String, idsneakers: String, image:String): String {
@@ -81,6 +88,49 @@ class MarketViewModel: ViewModel() {
                     }
                 }
                 override fun onFailure(call: Call<SneakersView>, t: Throwable) {
+                    _resultState.value = ResultState.Error(t.message.toString())
+                    Log.e("SneakersView", t.message.toString())
+                }
+            })
+        }
+    }
+
+    fun ViewFavorite(filter: String){
+        _resultState.value = ResultState.Loading
+        viewModelScope.launch {
+            apiService.checkFavorite(
+                filter,
+            ).enqueue(object : Callback<FavoriteList> {
+                override fun onResponse(
+                    call: Call<FavoriteList>,
+                    response: Response<FavoriteList>
+                ) {
+                    try {
+                        response.body()?.let{
+                            _favorites.value = it.items
+                            _resultState.value = ResultState.Success("Success")
+                            Log.d("SneakersView", "Success")
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java).message
+                                _resultState.value = ResultState.Error(message)
+
+                            } catch (ex: Exception) {
+                                Log.e(
+                                    "SneakersView",
+                                    "Failed to parse error response: ${ex.message}"
+                                )
+                                _resultState.value = ResultState.Error(ex.message.toString())
+                            }
+                        }
+                    } catch (ex: Exception) {
+                        Log.e("SneakersView", ex.message.toString())
+                        _resultState.value = ResultState.Error(ex.message.toString())
+                    }
+                }
+                override fun onFailure(call: Call<FavoriteList>, t: Throwable) {
                     _resultState.value = ResultState.Error(t.message.toString())
                     Log.e("SneakersView", t.message.toString())
                 }

@@ -32,6 +32,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +58,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.createinlager.R
+import com.example.createinlager.data.model.FavoriteList
+import com.example.createinlager.data.model.FavoriteResponse
 import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
@@ -63,6 +67,11 @@ import com.example.createinlager.presentation.theme.ui.bottomText
 import com.example.createinlager.presentation.theme.ui.miniTextButton
 import com.example.createinlager.presentation.theme.ui.textCategory
 import com.example.createinlager.presentation.theme.ui.textInFiedMarket
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+
+
+
 
 @Composable
 fun MarketTextField(text: String, fraction: Float) {
@@ -137,12 +146,27 @@ fun CategoryRow(token:String, id:String, navController: NavController){
 }
 
 @Composable
-fun productСard( sneakers: Array<String>, viewModel: MarketViewModel = viewModel ()){
+fun productСard(favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,listCart: Array<Array<String>>,sneakers: Array<String>, viewModel: MarketViewModel = viewModel ()){
+
 
     var loved by remember { mutableStateOf(false) }
     var inCart by remember { mutableStateOf(false) }
     var CurretidFavorite by remember { mutableStateOf("") }
     var CurretidInCarts by remember { mutableStateOf("") }
+
+    if (favorite1 != (-1)) {
+        loved = true
+        CurretidFavorite = listFavorite[favorite1][0]
+    }
+    if (Cart1 != (-1)) {
+        inCart = true
+        CurretidInCarts = listCart[Cart1][0]
+    }
+
+    var isInitialized by remember { mutableStateOf(false) }
+
+    val idsneakers = sneakers[0]
+
 
     if (sneakers.isNotEmpty()) {
 
@@ -272,7 +296,23 @@ fun productСard( sneakers: Array<String>, viewModel: MarketViewModel = viewMode
 }
 
 @Composable
+fun isFaforite(idsneakers:String, favoriteList: Array<Array<String>>): Int{
+
+    for(i in favoriteList.indices){
+        if(idsneakers == favoriteList[i][1]){
+            return i
+        }
+    }
+    return -1
+}
+
+@Composable
 fun columnProducts(sneakers: Array<Array<String>>){
+
+
+//    val listFavorite = listFavorite("iduser = '$iduser'", token)
+//
+//    val listCart = listCart("iduser = '$iduser'", token)
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
@@ -283,7 +323,7 @@ fun columnProducts(sneakers: Array<Array<String>>){
             .fillMaxWidth()
     ) {
         items(sneakers.size) { index ->
-            productСard(sneakers[index])
+//            productСard(sneakers[index])
         }
     }
 

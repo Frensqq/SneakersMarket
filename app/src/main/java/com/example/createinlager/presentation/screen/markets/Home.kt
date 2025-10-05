@@ -51,11 +51,11 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
 
     var isInitialized by remember { mutableStateOf(false) }
 
-    viewModel.SneakersImport("id!='null'", "+created", 2)
+
 
     LaunchedEffect(Unit) {
         if (!isInitialized) {
-
+            viewModel.SneakersImport("id!='null'", "+created", 2)
             //ClassSnekers.value = viewModel.sneakersList.value
             isInitialized = true
 

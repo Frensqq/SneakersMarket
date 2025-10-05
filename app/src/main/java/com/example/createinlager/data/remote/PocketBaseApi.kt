@@ -1,9 +1,11 @@
 package com.example.createinlager.data.remote
 
 import com.example.createinlager.data.model.AuthResponse
+import com.example.createinlager.data.model.FavoriteList
 import com.example.createinlager.data.model.OtpResponse
 import com.example.createinlager.data.model.SneakersView
 import com.example.createinlager.data.model.UserResponse
+import com.example.createinlager.data.model.FavoriteResponse
 import com.example.createinlager.domain.model.ChangePassRequest
 import com.example.createinlager.domain.model.OtpAuth
 import com.example.createinlager.domain.model.OtpRequest
@@ -48,6 +50,10 @@ interface PocketBaseApi {
     @GET("/api/collections/sneakers/records")
     fun ViewSneakers(@Query("filter") filter: String, @Query("sort") sort: String, @Query("perPage") perPage: Int ): Call<SneakersView>
 
+    //Вывод товара если он в избраном
+
+    @GET("/api/collections/Love/records")
+    fun checkFavorite(@Query("filter") filter: String): Call<FavoriteList>
 
 
 }
