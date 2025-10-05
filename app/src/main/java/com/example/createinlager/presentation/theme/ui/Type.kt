@@ -1,5 +1,6 @@
 package com.example.createinlager.presentation.theme.ui
 
+import android.icu.text.CaseMap
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
@@ -70,6 +71,14 @@ val TitleType = TextStyle(
     fontWeight = FontWeight(700),
     fontSize = 30.sp,
     lineHeight = 30.sp,
+    letterSpacing = 0.sp
+)
+
+val TitleCategoryType = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(600),
+    fontSize = 16.sp,
+    lineHeight = 20.sp,
     letterSpacing = 0.sp
 )
 

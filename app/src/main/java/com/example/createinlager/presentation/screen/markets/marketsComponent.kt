@@ -51,6 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
@@ -100,7 +101,7 @@ fun MarketTextField(text: String, fraction: Float) {
 }
 
 @Composable
-fun CategoryRow(){
+fun CategoryRow(token:String, id:String, navController: NavController){
 
     val category = listOf("Все", "Outdoor", "Tennis", "Running")
 
@@ -109,8 +110,9 @@ fun CategoryRow(){
         items(category.size) {index ->
 
             Button(
-
-                onClick = { },
+                onClick = {
+                    navController.navigate("CatalogSneakers/${category[index]}/${id}/${token}")
+                },
                 modifier = Modifier.padding(start = 20.dp ,end = if(index == category.size-1){20.dp} else 0.dp).height(40.dp).width(108.dp).shadow(
                     elevation = 10.dp,
                     shape = RoundedCornerShape(8.dp)
@@ -168,7 +170,7 @@ fun productСard( sneakers: Array<String>, viewModel: MarketViewModel = viewMode
                             .clip(CircleShape)
                             .background(colorResource(R.color.background)), contentAlignment = Alignment.Center) {
                         Icon(
-                            bitmap = ImageBitmap.imageResource(R.drawable.empty_heart),
+                            bitmap = ImageBitmap.imageResource(id = if (loved) R.drawable.heart else R.drawable.empty_heart),
                             modifier = Modifier.size(16.dp),
                             contentDescription = null,
                             tint = if (loved) colorResource(R.color.red) else colorResource(R.color.hint)

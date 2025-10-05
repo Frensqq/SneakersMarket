@@ -96,7 +96,7 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
                         Box(
                             modifier = Modifier.size(44.dp)
                                 .clip(RoundedCornerShape(10.dp))
-                                .background(colorResource(R.color.white)),
+                                .background(colorResource(R.color.background)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -141,13 +141,17 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
 
             }
 
-            CategoryRow()
+            CategoryRow(token,userId,navController)
 
-            Column(modifier = Modifier.padding(horizontal = 20.dp).fillMaxSize()) {
+            Column(modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth()) {
 
                 Spacer(modifier = Modifier.height(23.dp))
 
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
 
                     nameTextField("Популярное", 0, 0)
 
@@ -156,9 +160,12 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
 
                 Spacer(modifier = Modifier.height(34.dp))
 
+            }
+
                 if (ClassSnekers.value.isNotEmpty()) {
                     columnProducts(ListSneakers)
                 }
+            Column(modifier = Modifier.padding(horizontal = 20.dp).fillMaxSize()) {
 
 
                 Spacer(modifier = Modifier.height(29.dp))

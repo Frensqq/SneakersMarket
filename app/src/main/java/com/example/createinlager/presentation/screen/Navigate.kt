@@ -10,6 +10,7 @@ import com.example.createinlager.presentation.screen.authentication.RegisterAcc
 import com.example.createinlager.presentation.screen.authentication.SingIn
 import com.example.createinlager.presentation.screen.authentication.Verification
 import com.example.createinlager.presentation.screen.authentication.forgotPassword
+import com.example.createinlager.presentation.screen.markets.Category
 import com.example.createinlager.presentation.screen.markets.Home
 
 @Composable
@@ -39,6 +40,11 @@ fun Navigate() {
             val userId = backStackEntry.arguments?.getString("userIdToHome")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToHome")?: ""
             Home(userId,token,  navController) }
+        composable("CatalogSneakers/{typeCross}/{userId}/{token}") { backStackEntry ->
+            val typeCross = backStackEntry.arguments?.getString("typeCross") ?: ""
+            val userId = backStackEntry.arguments?.getString("userIdToHome")?: ""
+            val token =  backStackEntry.arguments?.getString("tokenToHome")?: ""
+            Category(typeCross = typeCross,userId, token,navController) }
 
 
 
