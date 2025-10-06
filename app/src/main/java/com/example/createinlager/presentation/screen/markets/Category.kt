@@ -71,7 +71,7 @@ fun Category(typeCross: String,userId: String,token:String,navController: NavCon
 
         val sneakersArray = ConverToArrayArray(sneakers)
 
-        columnProducts(sneakersArray)
+        columnProducts(sneakersArray, userId)
 
     }
 

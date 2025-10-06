@@ -163,7 +163,7 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
             }
 
                 if (ClassSnekers.value.isNotEmpty()) {
-                    columnProducts(ListSneakers)
+                    columnProducts(ListSneakers, userId)
                 }
             Column(modifier = Modifier.padding(horizontal = 20.dp).fillMaxSize()) {
 

@@ -36,14 +36,14 @@ fun Navigate() {
             val userId = backStackEntry.arguments?.getString("userId")?: ""
             val token =  backStackEntry.arguments?.getString("token")?: ""
             CreateNewPassword(userId,token,  navController) }
-        composable("Home/{userId}/{token}") {backStackEntry ->
+        composable("Home/{userIdToHome}/{tokenToHome}") {backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userIdToHome")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToHome")?: ""
             Home(userId,token,  navController) }
-        composable("CatalogSneakers/{typeCross}/{userId}/{token}") { backStackEntry ->
+        composable("CatalogSneakers/{typeCross}/{userIdToHomeTWO}/{tokenToHomeTWO}") { backStackEntry ->
             val typeCross = backStackEntry.arguments?.getString("typeCross") ?: ""
-            val userId = backStackEntry.arguments?.getString("userIdToHome")?: ""
-            val token =  backStackEntry.arguments?.getString("tokenToHome")?: ""
+            val userId = backStackEntry.arguments?.getString("userIdToHomeTWO")?: ""
+            val token =  backStackEntry.arguments?.getString("tokenToHomeTWO")?: ""
             Category(typeCross = typeCross,userId, token,navController) }
 
 

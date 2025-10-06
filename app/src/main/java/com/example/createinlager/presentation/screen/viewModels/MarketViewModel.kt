@@ -13,6 +13,7 @@ import com.example.createinlager.data.model.SneakersView
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.remote.PocketBaseApiService
 import com.example.createinlager.domain.model.UserRequest
+import com.example.createinlager.domain.model.favoriteRequest
 import com.example.createinlager.domain.state.ResultState
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +33,7 @@ class MarketViewModel: ViewModel() {
     private val _SneakersList = mutableStateOf<List<Sneakers>>(emptyList())
     val sneakersList: State<List<Sneakers>>  = _SneakersList
 
-
-
+    private val _id = mutableStateOf("")
     private val _sneakers = MutableStateFlow<List<Sneakers>>(emptyList())
     val sneakers: StateFlow<List<Sneakers>> get() = _sneakers.asStateFlow()
 
@@ -138,4 +138,95 @@ class MarketViewModel: ViewModel() {
         }
     }
 
+    fun CreateFavorite(iduser:String, idsneakers:String){
+        _resultState.value = ResultState.Loading
+        viewModelScope.launch {
+            apiService.addFavorite(
+                favoriteRequest(
+                    iduser ,
+                    idsneakers
+                )
+            ).enqueue(object : Callback<FavoriteList> {
+                override fun onResponse(
+                    call: Call<FavoriteList>,
+                    response: Response<FavoriteList>
+                ) {
+                    try {
+                        response.body()?.let{
+                            _favorites.value = it.items
+                            _id.value=it.items[0].id
+                            _resultState.value = ResultState.Success("Success")
+                            Log.d("AddFavorite", "Success")
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java).message
+                                _resultState.value = ResultState.Error(message)
+
+                            } catch (ex: Exception) {
+                                Log.e(
+                                    "AddFavorite",
+                                    "Failed to parse error response: ${ex.message}"
+                                )
+                                _resultState.value = ResultState.Error(ex.message.toString())
+                            }
+                        }
+                    } catch (ex: Exception) {
+                        Log.e("AddFavorite", ex.message.toString())
+                        _resultState.value = ResultState.Error(ex.message.toString())
+                    }
+                }
+                override fun onFailure(call: Call<FavoriteList>, t: Throwable) {
+                    _resultState.value = ResultState.Error(t.message.toString())
+                    Log.e("AddFavorite", t.message.toString())
+                }
+            })
+        }
+    }
+
+    fun DeleteFavorite(id:String){
+        _resultState.value = ResultState.Loading
+        viewModelScope.launch {
+            apiService.deleteFavorite(
+                id
+            ).enqueue(object : Callback<Unit> {
+                override fun onResponse(
+                    call: Call<Unit>,
+                    response: Response<Unit>
+                ) {
+                    try {
+                        response.body()?.let{
+                            _resultState.value = ResultState.Success("Success")
+                            Log.d("DelFavorite", "Success")
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java).message
+                                _resultState.value = ResultState.Error(message)
+
+                            } catch (ex: Exception) {
+                                Log.e(
+                                    "DelFavorite",
+                                    "Failed to parse error response: ${ex.message}"
+                                )
+                                _resultState.value = ResultState.Error(ex.message.toString())
+                            }
+                        }
+                    } catch (ex: Exception) {
+                        Log.e("DelFavorite", ex.message.toString())
+                        _resultState.value = ResultState.Error(ex.message.toString())
+                    }
+                }
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    _resultState.value = ResultState.Error(t.message.toString())
+                    Log.e("DelFavorite", t.message.toString())
+                }
+            })
+        }
+    }
+
+
+    fun getId(): String = _id.value
 }

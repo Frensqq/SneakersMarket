@@ -31,6 +31,7 @@ class UserViewModel(): ViewModel() {
     private val _user = mutableStateOf<UserResponse?>(null)
     val user: State<UserResponse?> get() = _user
 
+    private val _id = mutableStateOf("")
     private val _otpCode = mutableStateOf<String>("")
     val otpCode: State<String>  = _otpCode
 
@@ -113,6 +114,7 @@ class UserViewModel(): ViewModel() {
                         response.body()?.let {
                             val token = it.token
                             _token.value = it.token
+                            _id.value = response.body()!!.record.id
                             _user.value = it.record
                             Log.d("SingIn", token)
                             _resultState.value = ResultState.Success("Success")
@@ -282,4 +284,7 @@ class UserViewModel(): ViewModel() {
         }
 
     }
+
+    fun getId(): String = _id.value
+
 }

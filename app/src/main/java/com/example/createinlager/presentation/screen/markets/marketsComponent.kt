@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -145,8 +146,10 @@ fun CategoryRow(token:String, id:String, navController: NavController){
 
 }
 
+//favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,listCart: Array<Array<String>>,
+
 @Composable
-fun productСard(favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,listCart: Array<Array<String>>,sneakers: Array<String>, viewModel: MarketViewModel = viewModel ()){
+fun productСard(iduser:String, sneakers: Array<String>, viewModel: MarketViewModel = viewModel ()){
 
 
     var loved by remember { mutableStateOf(false) }
@@ -154,14 +157,28 @@ fun productСard(favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,
     var CurretidFavorite by remember { mutableStateOf("") }
     var CurretidInCarts by remember { mutableStateOf("") }
 
-    if (favorite1 != (-1)) {
-        loved = true
-        CurretidFavorite = listFavorite[favorite1][0]
+    val initializer = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+
+        if (!initializer.value){
+
+            viewModel.ViewFavorite("(iduser = '$iduser')&&(idsneakers = '${sneakers[2]}')")
+
+        }
+        initializer.value = true
     }
-    if (Cart1 != (-1)) {
-        inCart = true
-        CurretidInCarts = listCart[Cart1][0]
-    }
+
+    val idFavorite =remember { mutableStateOf("") }
+
+//    if (favorite1 != (-1)) {
+//        loved = true
+//        CurretidFavorite = listFavorite[favorite1][0]
+//    }
+//    if (Cart1 != (-1)) {
+//        inCart = true
+//        CurretidInCarts = listCart[Cart1][0]
+//    }
 
     var isInitialized by remember { mutableStateOf(false) }
 
@@ -176,14 +193,26 @@ fun productСard(favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,
                 .background(colorResource(R.color.white))
         ) {
 
-            Column(modifier = Modifier.padding( horizontal = 9.dp).fillMaxSize()) {
+            Column(modifier = Modifier.padding(top = 9.dp, start = 9.dp, end = 9.dp).fillMaxSize()) {
 
 
                 Box() {
 
                     IconButton(
                         onClick = {
-                            loved = !loved
+                            if (loved){
+                                viewModel.DeleteFavorite(idFavorite.value)
+
+
+                                loved = !loved
+                            }
+                            else{
+                                viewModel.CreateFavorite(iduser,sneakers[2])
+                                idFavorite.value = viewModel.getId()
+
+                                loved = !loved
+                            }
+
 
                         },
                         modifier = Modifier.size(28.dp)
@@ -214,16 +243,16 @@ fun productСard(favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,
                                     .size(Size.ORIGINAL)
                                     .build(),
                                 contentDescription = null,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.heightIn(max = 70.dp).fillMaxWidth()
                                     .clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.FillWidth,
+                                contentScale = ContentScale.FillHeight,
                             )
                         } else {
                             Image(
                                 bitmap = ImageBitmap.imageResource(R.drawable.stockimage),
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.heightIn(max = 70.dp).fillMaxWidth(),
                                 contentDescription = null,
-                                contentScale = ContentScale.FillWidth
+                                contentScale = ContentScale.FillHeight
                             )
                         }
                     }
@@ -240,8 +269,6 @@ fun productСard(favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,
 
                     Text(sneakers[3], style = bottomText, color = colorResource(R.color.hint))
 
-                    Spacer(modifier = Modifier.height(14.dp))
-
                     Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
 
                         Text(
@@ -250,8 +277,6 @@ fun productСard(favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,
                             color = colorResource(R.color.text),
                         )
                     }
-
-
 
                 }
             }
@@ -307,12 +332,14 @@ fun isFaforite(idsneakers:String, favoriteList: Array<Array<String>>): Int{
 }
 
 @Composable
-fun columnProducts(sneakers: Array<Array<String>>){
+fun columnProducts(sneakers: Array<Array<String>>, iduser: String){
 
 
 //    val listFavorite = listFavorite("iduser = '$iduser'", token)
 //
 //    val listCart = listCart("iduser = '$iduser'", token)
+
+
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
@@ -323,7 +350,7 @@ fun columnProducts(sneakers: Array<Array<String>>){
             .fillMaxWidth()
     ) {
         items(sneakers.size) { index ->
-//            productСard(sneakers[index])
+            productСard(iduser, sneakers[index])
         }
     }
 

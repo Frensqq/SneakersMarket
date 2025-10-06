@@ -11,8 +11,10 @@ import com.example.createinlager.domain.model.OtpAuth
 import com.example.createinlager.domain.model.OtpRequest
 import com.example.createinlager.domain.model.UserAuth
 import com.example.createinlager.domain.model.UserRequest
+import com.example.createinlager.domain.model.favoriteRequest
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -54,6 +56,15 @@ interface PocketBaseApi {
 
     @GET("/api/collections/Love/records")
     fun checkFavorite(@Query("filter") filter: String): Call<FavoriteList>
+
+    //Добавление заказа в избранное
+
+    @POST("/api/collections/Love/records")
+    fun addFavorite(@Body request: favoriteRequest): Call<FavoriteList>
+
+    //Удаление заказа из избранного
+    @DELETE("/api/collections/Love/records/{id}")
+    fun deleteFavorite(@Path("id") id: String): Call<Unit>
 
 
 }

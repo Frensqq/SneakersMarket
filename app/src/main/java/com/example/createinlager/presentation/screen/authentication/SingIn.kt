@@ -48,8 +48,11 @@ import com.example.createinlager.presentation.theme.ui.miniTextButton
 @Composable
 fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel()){
 
+    val userId = viewModel.getId()
+
     val result = viewModel.resultState.collectAsState()
     var email = remember { mutableStateOf("") }
+    var userDataId = viewModel.user.value?.id ?: ""
     var openDialog = remember { mutableStateOf(false) }
     var openDialogTwo = remember { mutableStateOf(false) }
 
@@ -160,12 +163,14 @@ fun SingIn(navController: NavController, viewModel: UserViewModel = viewModel())
         }
         is ResultState.Success -> {
 
-            val userData = viewModel.user.value
+
             val token = viewModel.token.value
 
 
-            if(userData != null){
-                navController.navigate("Home/${userData.id}/${token}")
+
+            if(userId != ""){
+
+                navController.navigate("Home/${userId}/${token}")
             }
 
         }
