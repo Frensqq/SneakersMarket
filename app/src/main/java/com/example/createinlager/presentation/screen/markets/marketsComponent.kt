@@ -59,6 +59,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.createinlager.R
+import com.example.createinlager.data.ConverToFavoriteArrayArray
 import com.example.createinlager.data.model.FavoriteList
 import com.example.createinlager.data.model.FavoriteResponse
 import com.example.createinlager.data.model.Sneakers
@@ -149,7 +150,7 @@ fun CategoryRow(token:String, id:String, navController: NavController){
 //favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,listCart: Array<Array<String>>,
 
 @Composable
-fun productСard(iduser:String, sneakers: Array<String>, viewModel: MarketViewModel = viewModel ()){
+fun productСard(favorite: Int,listFavorite: Array<Array<String>> ,iduser:String, sneakers: Array<String>, viewModel: MarketViewModel = viewModel ()){
 
 
     var loved by remember { mutableStateOf(false) }
@@ -157,24 +158,12 @@ fun productСard(iduser:String, sneakers: Array<String>, viewModel: MarketViewMo
     var CurretidFavorite by remember { mutableStateOf("") }
     var CurretidInCarts by remember { mutableStateOf("") }
 
-    val initializer = remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-
-        if (!initializer.value){
-
-            viewModel.ViewFavorite("(iduser = '$iduser')&&(idsneakers = '${sneakers[2]}')")
-
-        }
-        initializer.value = true
-    }
-
     val idFavorite =remember { mutableStateOf("") }
 
-//    if (favorite1 != (-1)) {
-//        loved = true
-//        CurretidFavorite = listFavorite[favorite1][0]
-//    }
+    if (favorite != (-1)) {
+        loved = true
+        CurretidFavorite = listFavorite[favorite][1]
+    }
 //    if (Cart1 != (-1)) {
 //        inCart = true
 //        CurretidInCarts = listCart[Cart1][0]
@@ -201,16 +190,23 @@ fun productСard(iduser:String, sneakers: Array<String>, viewModel: MarketViewMo
                     IconButton(
                         onClick = {
                             if (loved){
-                                viewModel.DeleteFavorite(idFavorite.value)
+                                viewModel.DeleteFavorite(CurretidFavorite)
+
+                                viewModel.ViewFavorite(
+                                    "(iduser = '$iduser')&&(idsneakers = '${sneakers[2]}')",
+                                )
 
 
-                                loved = !loved
+                                loved = false
                             }
                             else{
                                 viewModel.CreateFavorite(iduser,sneakers[2])
+                                viewModel.ViewFavorite(
+                                    "(iduser = '$iduser')&&(idsneakers = '${sneakers[2]}')",
+                                )
                                 idFavorite.value = viewModel.getId()
 
-                                loved = !loved
+                                loved = true
                             }
 
 
@@ -320,11 +316,11 @@ fun productСard(iduser:String, sneakers: Array<String>, viewModel: MarketViewMo
     }
 }
 
-@Composable
+
 fun isFaforite(idsneakers:String, favoriteList: Array<Array<String>>): Int{
 
     for(i in favoriteList.indices){
-        if(idsneakers == favoriteList[i][1]){
+        if(idsneakers == favoriteList[i][2]){
             return i
         }
     }
@@ -332,10 +328,20 @@ fun isFaforite(idsneakers:String, favoriteList: Array<Array<String>>): Int{
 }
 
 @Composable
+fun listFavorite(filter:String, viewModel: MarketViewModel = viewModel()): Array<Array<String>>{
+
+    viewModel.ViewFavorite(filter)
+
+    val favorite = viewModel.favorites.collectAsState()
+
+    return ConverToFavoriteArrayArray(favorite)
+}
+
+@Composable
 fun columnProducts(sneakers: Array<Array<String>>, iduser: String){
 
 
-//    val listFavorite = listFavorite("iduser = '$iduser'", token)
+   val listFavorite = listFavorite("iduser = '$iduser'")
 //
 //    val listCart = listCart("iduser = '$iduser'", token)
 
@@ -350,7 +356,16 @@ fun columnProducts(sneakers: Array<Array<String>>, iduser: String){
             .fillMaxWidth()
     ) {
         items(sneakers.size) { index ->
-            productСard(iduser, sneakers[index])
+            productСard(
+                isFaforite(
+                    sneakers[index][2],
+                    listFavorite
+                ),
+                listFavorite,
+                iduser,
+                sneakers[index]
+
+            )
         }
     }
 
