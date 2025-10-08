@@ -33,6 +33,9 @@ class MarketViewModel: ViewModel() {
     private val _SneakersList = mutableStateOf<List<Sneakers>>(emptyList())
     val sneakersList: State<List<Sneakers>>  = _SneakersList
 
+
+    private val _sneakersImage = MutableStateFlow<List<String>>(emptyList())
+    val sneakersImage: StateFlow<List<String>> get() = _sneakersImage.asStateFlow()
     private val _id = mutableStateOf("")
     private val _sneakers = MutableStateFlow<List<Sneakers>>(emptyList())
     val sneakers: StateFlow<List<Sneakers>> get() = _sneakers.asStateFlow()

@@ -1,9 +1,11 @@
 package com.example.createinlager.presentation.screen
 
+import android.telecom.Call
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.presentation.screen.OnBoards.OnBoards
 import com.example.createinlager.presentation.screen.authentication.CreateNewPassword
 import com.example.createinlager.presentation.screen.authentication.RegisterAcc
@@ -12,6 +14,7 @@ import com.example.createinlager.presentation.screen.authentication.Verification
 import com.example.createinlager.presentation.screen.authentication.forgotPassword
 import com.example.createinlager.presentation.screen.markets.Category
 import com.example.createinlager.presentation.screen.markets.Home
+import com.example.createinlager.presentation.screen.markets.SneakersDetails
 
 @Composable
 fun Navigate() {
@@ -45,7 +48,11 @@ fun Navigate() {
             val userId = backStackEntry.arguments?.getString("userIdToHomeTWO")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToHomeTWO")?: ""
             Category(typeCross = typeCross,userId, token,navController) }
-
+        composable("Details/{sneakersId}/{userIdToDetails}/{tokenToDetails}") { backStackEntry ->
+            val sneakersId = backStackEntry.arguments?.getString("sneakersId")?: ""
+            val userId = backStackEntry.arguments?.getString("userIdToDetails")?: ""
+            val token =  backStackEntry.arguments?.getString("tokenToDetails")?: ""
+            SneakersDetails(sneakersId,userId, token,navController) }
 
 
     }

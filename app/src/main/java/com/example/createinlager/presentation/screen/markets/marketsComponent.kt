@@ -1,12 +1,11 @@
 package com.example.createinlager.presentation.screen.markets
 
-import android.graphics.Color
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,13 +15,11 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -30,10 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -150,7 +144,7 @@ fun CategoryRow(token:String, id:String, navController: NavController){
 //favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,listCart: Array<Array<String>>,
 
 @Composable
-fun productСard(favorite: Int,listFavorite: Array<Array<String>> ,iduser:String, sneakers: Array<String>, viewModel: MarketViewModel = viewModel ()){
+fun productСard(favorite: Int, listFavorite: Array<Array<String>>, iduser:String,token: String, sneakers: Array<String>, navController: NavController, viewModel: MarketViewModel = viewModel ()){
 
 
     var loved by remember { mutableStateOf(false) }
@@ -169,17 +163,13 @@ fun productСard(favorite: Int,listFavorite: Array<Array<String>> ,iduser:String
 //        CurretidInCarts = listCart[Cart1][0]
 //    }
 
-    var isInitialized by remember { mutableStateOf(false) }
-
-    val idsneakers = sneakers[0]
-
-
     if (sneakers.isNotEmpty()) {
 
         Box(
             modifier = Modifier.width(160.dp).height(182.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(colorResource(R.color.white))
+                .clickable(onClick = {navController.navigate("Details/${sneakers[2]}/${iduser}/${token}")})
         ) {
 
             Column(modifier = Modifier.padding(top = 9.dp, start = 9.dp, end = 9.dp).fillMaxSize()) {
@@ -338,11 +328,11 @@ fun listFavorite(filter:String, viewModel: MarketViewModel = viewModel()): Array
 }
 
 @Composable
-fun columnProducts(sneakers: Array<Array<String>>, iduser: String){
+fun columnProducts(sneakers: Array<Array<String>>, iduser: String,token: String, navController: NavController){
 
 
    val listFavorite = listFavorite("iduser = '$iduser'")
-//
+
 //    val listCart = listCart("iduser = '$iduser'", token)
 
 
@@ -363,14 +353,15 @@ fun columnProducts(sneakers: Array<Array<String>>, iduser: String){
                 ),
                 listFavorite,
                 iduser,
-                sneakers[index]
+                token,
+                sneakers[index],
+                navController
 
             )
         }
     }
-
-
 }
+
 
 
 

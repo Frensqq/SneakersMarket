@@ -69,9 +69,9 @@ fun Category(typeCross: String,userId: String,token:String,navController: NavCon
 
         val sneakers = viewModel.sneakers.collectAsState()
 
-        val sneakersArray = ConverToArrayArray(sneakers)
+        val ListSneakers = ConverToArrayArray(sneakers)
 
-        columnProducts(sneakersArray, userId)
+        columnProducts(ListSneakers, userId, token, navController)
 
     }
 

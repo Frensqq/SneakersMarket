@@ -96,7 +96,7 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
                         Box(
                             modifier = Modifier.size(44.dp)
                                 .clip(RoundedCornerShape(10.dp))
-                                .background(colorResource(R.color.background)),
+                                .background(colorResource(R.color.white)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -163,7 +163,7 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
             }
 
                 if (ClassSnekers.value.isNotEmpty()) {
-                    columnProducts(ListSneakers, userId)
+                    columnProducts(ListSneakers, userId, token, navController)
                 }
             Column(modifier = Modifier.padding(horizontal = 20.dp).fillMaxSize()) {
 

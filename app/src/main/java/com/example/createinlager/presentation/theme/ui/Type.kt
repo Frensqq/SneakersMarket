@@ -106,11 +106,28 @@ val ButtonText = TextStyle(
     letterSpacing = 0.sp
 )
 
+val TypeCostDetails = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 24.sp,
+    lineHeight = 24.sp,
+    letterSpacing = 0.sp
+)
+
 val TextFieldPlace = TextStyle(
     fontFamily = RaleWayFamily,
     fontWeight = FontWeight(400),
     fontSize = 14.sp,
     lineHeight = 16.sp,
+)
+
+val TextInfo = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 14.sp,
+    lineHeight = 24.sp,
+    letterSpacing = 0.sp
+
 )
 
 val TitleAuth = TextStyle(
@@ -169,5 +186,14 @@ val textCategory = TextStyle(
     lineHeight = 16.sp,
     letterSpacing = 1.sp,
 )
+
+val TitleDetails = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 26.sp,
+    lineHeight = 26.sp,
+    letterSpacing = 0.sp,
+)
+
 
 

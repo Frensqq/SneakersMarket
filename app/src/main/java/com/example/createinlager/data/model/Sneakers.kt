@@ -15,5 +15,4 @@ data class Sneakers(
     val watch: String,
     val created: String,
     val updated: String
-
 )
