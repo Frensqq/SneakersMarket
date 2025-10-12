@@ -1,5 +1,8 @@
 package com.example.createinlager.presentation.screen.markets
 
+import android.graphics.drawable.shapes.Shape
+import android.util.LayoutDirection
+import android.util.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,11 +33,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -45,6 +52,7 @@ import com.example.createinlager.presentation.screen.nameTextField
 import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
 import com.example.createinlager.presentation.theme.ui.TitleAuth
 import com.example.createinlager.presentation.theme.ui.miniTextButton
+
 
 @Composable
 fun Home(userId: String, token:String, navController: NavController, viewModel: MarketViewModel = viewModel()){
@@ -185,9 +193,23 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
 
             }
 
+
+
+        }
+
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            navigationBar(navController)
         }
     }
 
 
 
 }
+
+
+
+
+
+
+
+

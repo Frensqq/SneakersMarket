@@ -13,6 +13,7 @@ import com.example.createinlager.presentation.screen.authentication.SingIn
 import com.example.createinlager.presentation.screen.authentication.Verification
 import com.example.createinlager.presentation.screen.authentication.forgotPassword
 import com.example.createinlager.presentation.screen.markets.Category
+import com.example.createinlager.presentation.screen.markets.Favorites
 import com.example.createinlager.presentation.screen.markets.Home
 import com.example.createinlager.presentation.screen.markets.SneakersDetails
 
@@ -54,7 +55,11 @@ fun Navigate() {
             val token =  backStackEntry.arguments?.getString("tokenToDetails")?: ""
             val CurretidFavorite = backStackEntry.arguments?.getString("CurretidFavorite")?: ""
             SneakersDetails(sneakersId,userId, token, CurretidFavorite,navController) }
-
+        composable("Favorite/{userIdToFavorite}/{tokenToFavorite}") {backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userIdToFavorite")?: ""
+            val token =  backStackEntry.arguments?.getString("tokenToFavorite")?: ""
+            Favorites(userId,token,  navController)
+        }
 
     }
 }

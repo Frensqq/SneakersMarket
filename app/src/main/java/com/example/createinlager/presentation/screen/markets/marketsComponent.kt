@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -363,6 +364,106 @@ fun columnProducts(sneakers: Array<Array<String>>, iduser: String,token: String,
         }
     }
 }
+
+
+@Composable
+fun navigationBar(navController: NavController){
+    Box(modifier = Modifier.fillMaxSize().height(116.dp),  contentAlignment = Alignment.BottomCenter,){
+
+        IconButton(
+            onClick = {navController.navigate("mycart")},
+            modifier =  Modifier.padding(bottom = 60.dp).height(60.dp).width(60.dp)
+                .fillMaxSize()
+                .clip(CircleShape)
+                .background(colorResource(R.color.accent)) // Размер кнопки
+        ) {
+            Icon(
+                bitmap = ImageBitmap.imageResource(R.drawable.bag),
+                modifier = Modifier.fillMaxSize(0.5f),
+                contentDescription = null,
+                tint = colorResource(R.color.block)
+            )
+        }
+
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter){
+
+            Image(bitmap = ImageBitmap.imageResource(R.drawable.homenav), contentDescription =null, modifier = Modifier.fillMaxWidth(), contentScale = ContentScale.FillWidth )
+            RowInBox(navController)
+
+        }
+
+    }
+}
+
+@Composable
+fun RowInBox(navController: NavController){
+
+
+    Row(modifier = Modifier.fillMaxWidth().padding(30.dp).height(35.dp), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceBetween) {
+
+        IconButton(
+            onClick = {navController.navigate("Home")},
+            modifier =  Modifier
+                .fillMaxHeight() // Размер кнопки
+        ) {
+            Icon(
+                bitmap = ImageBitmap.imageResource(R.drawable.home),
+                modifier = Modifier.fillMaxSize(0.7f),
+                contentDescription = null,
+                tint = colorResource(R.color.accent)
+            )
+        }
+
+        IconButton(
+            onClick = {navController.navigate("Favorite")},
+            modifier =  Modifier
+                .fillMaxHeight() // Размер кнопки
+        ) {
+            Icon(
+                bitmap = ImageBitmap.imageResource(R.drawable.empty_heart),
+                modifier = Modifier.fillMaxSize(0.7f),
+                contentDescription = null,
+                tint = colorResource(R.color.hint)
+            )
+        }
+
+        Spacer(modifier = Modifier.width(30.dp))
+
+        IconButton(
+            onClick = {},
+            modifier =  Modifier
+                .fillMaxHeight() // Размер кнопки
+        ) {
+            Icon(
+                bitmap = ImageBitmap.imageResource(R.drawable.notification),
+                modifier = Modifier.fillMaxSize(0.7f),
+                contentDescription = null,
+                tint = colorResource(R.color.hint)
+            )
+        }
+
+        IconButton(
+            onClick = { navController.navigate("profile") },
+            modifier =  Modifier
+                .fillMaxHeight() // Размер кнопки
+        ) {
+            Icon(
+                bitmap = ImageBitmap.imageResource(R.drawable.people),
+                modifier = Modifier.fillMaxSize(0.7f),
+                contentDescription = null,
+                tint = colorResource(R.color.hint)
+            )
+        }
+
+
+
+    }
+
+
+}
+
+
+
 
 
 @Preview
