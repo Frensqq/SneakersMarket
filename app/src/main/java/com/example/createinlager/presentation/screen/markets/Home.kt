@@ -149,7 +149,7 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
 
             }
 
-            CategoryRow(token,userId,navController)
+            CategoryRow(token,userId,"",navController)
 
             Column(modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth()) {
 

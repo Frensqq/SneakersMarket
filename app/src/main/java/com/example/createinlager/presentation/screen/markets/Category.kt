@@ -63,7 +63,7 @@ fun Category(typeCross: String,userId: String,token:String,navController: NavCon
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        CategoryRow(token,userId,navController)
+        CategoryRow(token,userId,typeCross, navController)
 
         Spacer(modifier = Modifier.height(18.dp))
 

@@ -106,7 +106,7 @@ fun MarketTextField(text: String, fraction: Float) {
 }
 
 @Composable
-fun CategoryRow(token:String, id:String, navController: NavController){
+fun CategoryRow(token:String, id:String, typeCross:String, navController: NavController){
 
     val category = listOf("Все", "Outdoor", "Tennis", "Running")
 
@@ -124,13 +124,13 @@ fun CategoryRow(token:String, id:String, navController: NavController){
                 ),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.white),
+                    containerColor = if (typeCross == category[index]) colorResource(R.color.accent) else colorResource(R.color.white),
                 ),
             ) {
                 Text(
                     category[index],
                     style = textCategory,
-                    color = colorResource(R.color.hint),
+                    color = if (typeCross == category[index]) colorResource(R.color.white) else colorResource(R.color.hint),
                     textAlign = TextAlign.Center
                 )
             }
