@@ -367,7 +367,7 @@ fun columnProducts(sneakers: Array<Array<String>>, iduser: String,token: String,
 
 
 @Composable
-fun navigationBar(navController: NavController){
+fun navigationBar(userId:String, token: String,navController: NavController){
     Box(modifier = Modifier.fillMaxSize().height(116.dp),  contentAlignment = Alignment.BottomCenter,){
 
         IconButton(
@@ -388,7 +388,7 @@ fun navigationBar(navController: NavController){
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter){
 
             Image(bitmap = ImageBitmap.imageResource(R.drawable.homenav), contentDescription =null, modifier = Modifier.fillMaxWidth(), contentScale = ContentScale.FillWidth )
-            RowInBox(navController)
+            RowInBox(userId, token, navController)
 
         }
 
@@ -396,13 +396,13 @@ fun navigationBar(navController: NavController){
 }
 
 @Composable
-fun RowInBox(navController: NavController){
+fun RowInBox(userId:String, token: String,navController: NavController){
 
 
     Row(modifier = Modifier.fillMaxWidth().padding(30.dp).height(35.dp), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceBetween) {
 
         IconButton(
-            onClick = {navController.navigate("Home")},
+            onClick = {navController.navigate("Home/${userId}/${token}")},
             modifier =  Modifier
                 .fillMaxHeight() // Размер кнопки
         ) {
@@ -415,7 +415,7 @@ fun RowInBox(navController: NavController){
         }
 
         IconButton(
-            onClick = {navController.navigate("Favorite")},
+            onClick = {navController.navigate("Favorite/${userId}/${token}")},
             modifier =  Modifier
                 .fillMaxHeight() // Размер кнопки
         ) {
@@ -443,7 +443,7 @@ fun RowInBox(navController: NavController){
         }
 
         IconButton(
-            onClick = { navController.navigate("profile") },
+            onClick = {  },
             modifier =  Modifier
                 .fillMaxHeight() // Размер кнопки
         ) {

@@ -198,7 +198,7 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
         }
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            navigationBar(navController)
+            navigationBar(userId, token, navController)
         }
     }
 

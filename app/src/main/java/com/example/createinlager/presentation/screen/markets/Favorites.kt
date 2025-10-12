@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,7 +15,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
 import com.example.createinlager.data.ConverToArrayArray
+import com.example.createinlager.data.ListFavoriteSneakersCreate
 import com.example.createinlager.presentation.screen.buttonBack
 import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
 import com.example.createinlager.presentation.theme.ui.TitleCategoryType
@@ -33,21 +40,35 @@ import com.example.createinlager.presentation.theme.ui.TitleCategoryType
 @Composable
 fun Favorites(userId: String,token:String,navController: NavController, viewModel: MarketViewModel = viewModel()){
 
+    var isInitialized by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (!isInitialized) {
+            viewModel.SneakersImport("id != 'null'",  "+created", 150)
+            isInitialized = true
+        }
+    }
+
     val ClassSnekers = viewModel.sneakers.collectAsState()
 
     val ListSneakers = ConverToArrayArray(ClassSnekers)
+    val listFavorite = listFavorite("(iduser = '$userId')")
+    val ListFavoriteSneakers = ListFavoriteSneakersCreate(ListSneakers,listFavorite)
 
-    Column(modifier = Modifier.fillMaxSize().background(colorResource(R.color.background)).padding(horizontal = 20.dp)) {
+
+    Column(modifier = Modifier.fillMaxSize().background(colorResource(R.color.background))) {
+
+        Spacer(modifier = Modifier.padding(top= 48.dp))
+
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
             buttonBack(navController, "Home/${userId}/${token}")
 
-            Text("Sneaker Shop", style = TitleCategoryType)
+            Text("Избранное", style = TitleCategoryType)
 
             IconButton(onClick = {}, modifier = Modifier.size(44.dp)) {
                 Box(
@@ -57,8 +78,9 @@ fun Favorites(userId: String,token:String,navController: NavController, viewMode
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        bitmap = ImageBitmap.imageResource(R.drawable.bag),
+                        bitmap = ImageBitmap.imageResource(R.drawable.heart),
                         modifier = Modifier.size(24.dp),
+                        tint = colorResource(R.color.red),
                         contentDescription = null
                     )
                 }
@@ -67,9 +89,12 @@ fun Favorites(userId: String,token:String,navController: NavController, viewMode
         }
 
         if (ClassSnekers.value.isNotEmpty()) {
-            columnProducts(ListSneakers, userId, token, navController)
+            columnProducts(ListFavoriteSneakers, userId, token, navController)
         }
 
+    }
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        navigationBar(userId, token, navController)
     }
 
 

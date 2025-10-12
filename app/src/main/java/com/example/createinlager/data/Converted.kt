@@ -48,3 +48,22 @@ fun ConverToFavoriteArrayArray(favorits:  State<List<FavoriteResponse>>): Array<
     return twoDArray
 }
 
+@Composable
+fun ListFavoriteSneakersCreate(ListSneakers: Array<Array<String>>, listFavorite: Array<Array<String>>):Array<Array<String>> {
+
+    val ListFavoriteSneakers = mutableListOf<Array<String>>()
+
+    var k = 0
+
+    for (i in ListSneakers.indices) {
+        for (j in listFavorite.indices) {
+            if (ListSneakers[i][2] == listFavorite[j][2]) {
+                ListFavoriteSneakers.add(ListSneakers[i])
+                k +=1
+            }
+        }
+    }
+    return ListFavoriteSneakers.toTypedArray()
+
+}
+
