@@ -1,7 +1,10 @@
 package com.example.createinlager.presentation.screen.markets
 
+import android.view.RoundedCorner
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,12 +21,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -32,9 +42,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -51,23 +67,22 @@ import com.example.createinlager.R
 import com.example.createinlager.data.ConverToArrayArray
 import com.example.createinlager.presentation.screen.buttonBack
 import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
+import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
 import com.example.createinlager.presentation.theme.ui.TextInfo
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
-import com.example.createinlager.presentation.theme.ui.TitleAuth
 import com.example.createinlager.presentation.theme.ui.TitleCategoryType
 import com.example.createinlager.presentation.theme.ui.TitleDetails
 import com.example.createinlager.presentation.theme.ui.TypeCostDetails
-import kotlin.collections.get
 
 @Composable
-fun SneakersDetails(sneakersId:String, userId: String, token:String,  navController: NavController, viewModel: MarketViewModel = viewModel()){
+fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFavorites: String, navController: NavController, viewModel: MarketViewModel = viewModel()){
 
     var isInitialized by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (!isInitialized) {
-            viewModel.SneakersImport( "id != '${sneakersId}'","+created",150)
+            viewModel.SneakersImport( "id = '${sneakersId}'","+created",150)
             isInitialized = true
         }
     }
@@ -132,13 +147,13 @@ fun SneakersDetails(sneakersId:String, userId: String, token:String,  navControl
 
             imageoutput(
                 listImage,
-                sneakers[0][4],
+                sneakers[0][0],
                         sneakers[0][2]
 
             )
 
             var MaxLines = remember { mutableStateOf(3) }
-            Column(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
                 Text(
                     sneakers[0][5],
@@ -166,6 +181,111 @@ fun SneakersDetails(sneakersId:String, userId: String, token:String,  navControl
 
 
         }
+
+        val listFavorite = listFavorite("(iduser = '$userId')&&(idsneakers = '${sneakersId}')")
+
+
+        var inCart by remember { mutableStateOf(false) }
+        var CurretidFavorite = remember { mutableStateOf(CurretidFavorites) }
+        var loved by remember { mutableStateOf(CurretidFavorite.value.isNotEmpty()) }
+        var CurretidInCarts by remember { mutableStateOf("") }
+
+        if (listFavorite.isNotEmpty()){
+            CurretidFavorite.value = listFavorite[0][1]
+        }
+
+        Box(modifier = Modifier.padding(bottom = 40.dp).fillMaxSize(), contentAlignment = Alignment.BottomCenter){
+            Row(modifier = Modifier.padding(horizontal = 20.dp)) {
+                IconButton(
+                    onClick = {
+                        if (loved){
+                            viewModel.DeleteFavorite(CurretidFavorite.value)
+
+                            viewModel.ViewFavorite(
+                                "(iduser = '$userId')&&(idsneakers = '${sneakersId}')",
+                            )
+
+
+                            loved = false
+                        }
+                        else{
+                            viewModel.CreateFavorite(userId,sneakersId)
+
+                            viewModel.ViewFavorite(
+                                "(iduser = '$userId')&&(idsneakers = '${sneakersId}')",
+                            )
+
+
+
+                            loved = true
+                        }
+
+
+                    },
+                    modifier = Modifier.size(52.dp)
+                        .clip(CircleShape)
+                ) {
+
+                    Box(modifier = Modifier.size(52.dp)
+                        .clip(CircleShape)
+                        .background(Color(0x66D9D9D9)), contentAlignment = Alignment.Center) {
+
+                        Icon(
+                            bitmap = ImageBitmap.imageResource(id = if (loved) R.drawable.heart else R.drawable.empty_heart),
+                            modifier = Modifier.size(24.dp),
+                            contentDescription = null,
+                            tint = if (loved) colorResource(R.color.red) else colorResource(R.color.hint)
+                        )
+                    }
+
+                }
+
+
+                    Button(onClick = {
+                        inCart = !inCart
+
+                    },
+                        modifier = Modifier.padding(start = 18.dp)
+                            .height(50.dp)
+                            .fillMaxSize(),
+                        shape = RoundedCornerShape(13.dp),
+
+                        colors = ButtonDefaults.buttonColors(
+                            disabledContainerColor = colorResource(R.color.disable),
+                            containerColor = colorResource(R.color.accent),
+                            contentColor = colorResource(R.color.block)
+                        )
+                    ){
+                        Row(modifier = Modifier.padding(horizontal = 12.dp).fillMaxSize(),
+                            horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically)
+                        {
+
+                            Icon(
+                                bitmap = ImageBitmap.imageResource(R.drawable.bag),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp),
+                            )
+
+                            Text(
+                                text = if (inCart) "Добавлено" else "В корзину",
+                                style = ButtonText,
+                                color = colorResource(R.color.block)
+                            )
+
+
+                            Spacer(modifier = Modifier.size(24.dp))
+                        }
+                    }
+
+
+
+
+
+            }
+        }
+
+
     }
 
 }
@@ -181,27 +301,64 @@ fun imageoutput(listImage: List<String>, collectionId:String, idSneak: String, v
     Column(modifier = Modifier.padding(top = 30.dp).heightIn(max = 350.dp)) {
         // Основное изображение
         if (listImage.isNotEmpty()) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(viewModel.getImage(collectionId, idSneak, listImage[selectedIndex]))
-                    .size(Size.ORIGINAL)
-                    .build(),
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp)).background(Color.White),
-                contentScale = ContentScale.FillWidth,
-            )
+            Box(modifier = Modifier.heightIn(max = 226.dp)) {
+
+                Column {
+                    Box(modifier = Modifier.fillMaxSize(0.3f))
+
+                    Box(
+                        modifier = Modifier.fillMaxWidth().fillMaxSize(0.6f)
+                            .background(colorResource(R.color.background)) // Белый фон контейнера
+                    ) {
+                        Canvas(
+                            modifier = Modifier.matchParentSize()
+                        ) {
+                            drawOval(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(Color(0x00000000),Color(0xFF2363F6) ),
+                                ),
+                                topLeft = Offset.Zero,
+
+                                style = Stroke(width = 2.dp.toPx())
+                            )
+                        }
+                    }
+
+                }
+                Box(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f)
+                        .background(colorResource(R.color.background))
+                )
+
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(viewModel.getImage(collectionId, idSneak, listImage[selectedIndex]))
+                        .size(Size.ORIGINAL)
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier.padding(horizontal = 47.dp).fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth,
+                )
+            }
         }
+
+        Spacer(modifier = Modifier.height(37.dp))
         // Миниатюры
         if (listImage.isNotEmpty()) {
             Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+
+                var currentI = remember { mutableStateOf(-1) }
 
                 for (i in 0..listImage.size-1) {
 
                     Box(
                         modifier = Modifier
                             .padding(10.dp)
-                            .clickable {selectedIndex = i}.clip(shape = RoundedCornerShape(12.dp))
+                            .clip(shape = RoundedCornerShape(16.dp))
+                            .clickable {selectedIndex = i
+                                currentI.value = i
+
+                            }.border(if (currentI.value == i) 3.dp else -1.dp, color = colorResource(R.color.accent), shape = RoundedCornerShape(16.dp))
                     ) {
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
@@ -210,7 +367,7 @@ fun imageoutput(listImage: List<String>, collectionId:String, idSneak: String, v
                                 .build(),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(60.dp).clip(RoundedCornerShape(4.dp)).background(Color.White),
+                                .size(56.dp).clip(RoundedCornerShape(4.dp)).background(Color.White),
                             contentScale = ContentScale.FillWidth
                         )
                     }

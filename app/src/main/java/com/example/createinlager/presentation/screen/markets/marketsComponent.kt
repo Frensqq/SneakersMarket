@@ -65,8 +65,7 @@ import com.example.createinlager.presentation.theme.ui.textCategory
 import com.example.createinlager.presentation.theme.ui.textInFiedMarket
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-
-
+import kotlin.collections.get
 
 
 @Composable
@@ -158,6 +157,7 @@ fun productСard(favorite: Int, listFavorite: Array<Array<String>>, iduser:Strin
         loved = true
         CurretidFavorite = listFavorite[favorite][1]
     }
+
 //    if (Cart1 != (-1)) {
 //        inCart = true
 //        CurretidInCarts = listCart[Cart1][0]
@@ -169,7 +169,7 @@ fun productСard(favorite: Int, listFavorite: Array<Array<String>>, iduser:Strin
             modifier = Modifier.width(160.dp).height(182.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(colorResource(R.color.white))
-                .clickable(onClick = {navController.navigate("Details/${sneakers[2]}/${iduser}/${token}")})
+                .clickable(onClick = {navController.navigate("Details/${sneakers[2]}/${iduser}/${token}/${CurretidFavorite}")})
         ) {
 
             Column(modifier = Modifier.padding(top = 9.dp, start = 9.dp, end = 9.dp).fillMaxSize()) {
@@ -208,15 +208,17 @@ fun productСard(favorite: Int, listFavorite: Array<Array<String>>, iduser:Strin
                         Box(modifier = Modifier.size(28.dp)
                             .clip(CircleShape)
                             .background(colorResource(R.color.background)), contentAlignment = Alignment.Center) {
-                        Icon(
-                            bitmap = ImageBitmap.imageResource(id = if (loved) R.drawable.heart else R.drawable.empty_heart),
-                            modifier = Modifier.size(16.dp),
-                            contentDescription = null,
-                            tint = if (loved) colorResource(R.color.red) else colorResource(R.color.hint)
-                        )
-                            }
+                            Icon(
+                                bitmap = ImageBitmap.imageResource(id = if (loved) R.drawable.heart else R.drawable.empty_heart),
+                                modifier = Modifier.size(16.dp),
+                                contentDescription = null,
+                                tint = if (loved) colorResource(R.color.red) else colorResource(R.color.hint)
+                            )
+                        }
 
                     }
+
+
 
                     Box(
                         contentAlignment = Alignment.Center,
@@ -361,8 +363,6 @@ fun columnProducts(sneakers: Array<Array<String>>, iduser: String,token: String,
         }
     }
 }
-
-
 
 
 @Preview

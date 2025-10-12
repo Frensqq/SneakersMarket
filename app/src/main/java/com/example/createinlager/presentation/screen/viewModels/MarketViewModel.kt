@@ -33,10 +33,10 @@ class MarketViewModel: ViewModel() {
     private val _SneakersList = mutableStateOf<List<Sneakers>>(emptyList())
     val sneakersList: State<List<Sneakers>>  = _SneakersList
 
-
     private val _sneakersImage = MutableStateFlow<List<String>>(emptyList())
     val sneakersImage: StateFlow<List<String>> get() = _sneakersImage.asStateFlow()
     private val _id = mutableStateOf("")
+    val id: State<String> = _id
     private val _sneakers = MutableStateFlow<List<Sneakers>>(emptyList())
     val sneakers: StateFlow<List<Sneakers>> get() = _sneakers.asStateFlow()
 
@@ -157,7 +157,7 @@ class MarketViewModel: ViewModel() {
                     try {
                         response.body()?.let{
                             _favorites.value = it.items
-                            _id.value=it.items[0].id
+                            _id.value=it.items[0].id?:"not"
                             _resultState.value = ResultState.Success("Success")
                             Log.d("AddFavorite", "Success")
                         }
@@ -231,5 +231,5 @@ class MarketViewModel: ViewModel() {
     }
 
 
-    fun getId(): String = _id.value
+    fun getId(): String = _id.value?:"0"
 }
