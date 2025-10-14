@@ -1,5 +1,6 @@
 package com.example.createinlager.presentation.screen.markets
 
+import android.icu.text.StringSearch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +22,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -29,6 +32,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +48,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,10 +60,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.createinlager.R
+import com.example.createinlager.data.ConverToArrayArray
 import com.example.createinlager.data.ConverToFavoriteArrayArray
 import com.example.createinlager.data.model.FavoriteList
 import com.example.createinlager.data.model.FavoriteResponse
 import com.example.createinlager.data.model.Sneakers
+import com.example.createinlager.domain.state.ResultState
 import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
 import com.example.createinlager.presentation.theme.ui.bottomText
@@ -70,13 +78,20 @@ import kotlin.collections.get
 
 
 @Composable
-fun MarketTextField(text: String, fraction: Float) {
+fun MarketTextField(text: String, fraction: Float, state: Boolean, viewModel: MarketViewModel = viewModel()): Array<Array<String>> {
+
+    val SneakersList = viewModel.sneakers.collectAsState()
+    var sneakers: Array<Array<String>> = emptyArray()
+    if (SneakersList.value.isNotEmpty()) {
+        sneakers = ConverToArrayArray(SneakersList)
+    }
 
     val string = remember { mutableStateOf("") }
 
     OutlinedTextField(
         value = string.value,
-        onValueChange = {},
+        enabled = state,
+        onValueChange = {string.value = it},
         modifier = Modifier.fillMaxWidth(fraction).height(52.dp)
             .shadow(elevation = 4.dp,
                 shape = RoundedCornerShape(12.dp)),
@@ -96,12 +111,29 @@ fun MarketTextField(text: String, fraction: Float) {
             focusedContainerColor = colorResource(R.color.white),
             unfocusedContainerColor = colorResource(R.color.white),
             unfocusedTextColor = colorResource(R.color.hint),
-            focusedTextColor = colorResource(R.color.text)
+            focusedTextColor = colorResource(R.color.text),
+            disabledContainerColor = colorResource(R.color.white)
 
+        ),
+       trailingIcon = if (state) {{Row{
+           Box(modifier = Modifier.height(24.dp).width(2.dp).background(colorResource(R.color.subtextdark)))
+
+           Icon(
+           bitmap = ImageBitmap.imageResource(R.drawable.micro),
+           tint = colorResource(R.color.hint),
+           contentDescription = null,
+           modifier = Modifier.padding(horizontal = 12.dp).size(24.dp)
+       )}
+                      }} else {{}},
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = {
+            viewModel.SneakersImport("name ~'${string.value}'", "+created", 150)
+        }
         ),
         shape = RoundedCornerShape(12.dp),
         singleLine = true,
         )
+    return sneakers
 
 }
 
@@ -331,10 +363,11 @@ fun listFavorite(filter:String, viewModel: MarketViewModel = viewModel()): Array
 }
 
 @Composable
-fun columnProducts(sneakers: Array<Array<String>>, iduser: String,token: String, navController: NavController){
+fun columnProducts(sneakers: Array<Array<String>>, iduser: String,token: String,  navController: NavController){
 
 
    val listFavorite = listFavorite("iduser = '$iduser'")
+
 
 //    val listCart = listCart("iduser = '$iduser'", token)
 

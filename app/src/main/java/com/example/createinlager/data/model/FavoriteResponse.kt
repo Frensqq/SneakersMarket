@@ -7,7 +7,6 @@ data class FavoriteResponse(
     val id: String,
     val iduser: String,
     val idsneakers: String,
-    val created: String,
-val updated: String
+    val created: String
 
 )

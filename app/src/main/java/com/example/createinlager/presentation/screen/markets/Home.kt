@@ -122,7 +122,8 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
                 Row(modifier = Modifier.fillMaxWidth()) {
 
 
-                    MarketTextField("Поиск", 0.80f)
+                    Box(modifier = Modifier.clickable(onClick = {navController.navigate("Search/${userId}/${token}")})){
+                    MarketTextField("Поиск", 0.80f, false)}
 
 
                     IconButton(

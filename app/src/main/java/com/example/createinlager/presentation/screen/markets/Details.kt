@@ -153,22 +153,23 @@ fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFav
             )
 
             var MaxLines = remember { mutableStateOf(3) }
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column() {
 
                 Text(
                     sneakers[0][5],
                     style = TextInfo,
-                    modifier = Modifier.padding(top = 33.dp),
+                    modifier = Modifier.padding(top = 33.dp).heightIn(max  = 150.dp).verticalScroll(rememberScrollState()),
                     maxLines = MaxLines.value,
                     color = colorResource(R.color.hint),
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+
                 )
 
                 Row(modifier = Modifier.padding(top = 10.dp).fillMaxWidth()) {
                     Text(
-                        "Подробнее",
+                        text = if (MaxLines.value ==3) "Подробнее" else "Свернуть",
                         modifier = Modifier.fillMaxWidth().clickable(onClick = {
-                            if (MaxLines.value < 10) MaxLines.value = 15
+                            if (MaxLines.value < 10) MaxLines.value = 30
                             else MaxLines.value = 3
                         }),
                         style = TextFieldPlace,
@@ -201,19 +202,12 @@ fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFav
                         if (loved){
                             viewModel.DeleteFavorite(CurretidFavorite.value)
 
-                            viewModel.ViewFavorite(
-                                "(iduser = '$userId')&&(idsneakers = '${sneakersId}')",
-                            )
-
 
                             loved = false
                         }
                         else{
                             viewModel.CreateFavorite(userId,sneakersId)
 
-                            viewModel.ViewFavorite(
-                                "(iduser = '$userId')&&(idsneakers = '${sneakersId}')",
-                            )
 
 
 

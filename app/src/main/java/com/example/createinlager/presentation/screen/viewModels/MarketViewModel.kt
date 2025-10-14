@@ -34,14 +34,14 @@ class MarketViewModel: ViewModel() {
     val sneakersList: State<List<Sneakers>>  = _SneakersList
 
     private val _sneakersImage = MutableStateFlow<List<String>>(emptyList())
-    val sneakersImage: StateFlow<List<String>> get() = _sneakersImage.asStateFlow()
+    val sneakersImage: StateFlow<List<String>> = _sneakersImage.asStateFlow()
     private val _id = mutableStateOf("")
     val id: State<String> = _id
     private val _sneakers = MutableStateFlow<List<Sneakers>>(emptyList())
-    val sneakers: StateFlow<List<Sneakers>> get() = _sneakers.asStateFlow()
+    val sneakers: StateFlow<List<Sneakers>> = _sneakers.asStateFlow()
 
     private val _favorites = MutableStateFlow<List<FavoriteResponse>>(emptyList())
-    val favorites: StateFlow<List<FavoriteResponse>> get() = _favorites.asStateFlow()
+    val favorites: StateFlow<List<FavoriteResponse>> = _favorites.asStateFlow()
 
 
     fun getImage(collectionId:String, idsneakers: String, image:String): String {

@@ -15,6 +15,7 @@ import com.example.createinlager.presentation.screen.authentication.forgotPasswo
 import com.example.createinlager.presentation.screen.markets.Category
 import com.example.createinlager.presentation.screen.markets.Favorites
 import com.example.createinlager.presentation.screen.markets.Home
+import com.example.createinlager.presentation.screen.markets.Search
 import com.example.createinlager.presentation.screen.markets.SneakersDetails
 
 @Composable
@@ -59,6 +60,11 @@ fun Navigate() {
             val userId = backStackEntry.arguments?.getString("userIdToFavorite")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToFavorite")?: ""
             Favorites(userId,token,  navController)
+        }
+        composable("Search/{userIdToHome}/{tokenToHome}") {backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userIdToSearch")?: ""
+            val token =  backStackEntry.arguments?.getString("tokenToSearch")?: ""
+            Search(userId,token,  navController)
         }
 
     }
