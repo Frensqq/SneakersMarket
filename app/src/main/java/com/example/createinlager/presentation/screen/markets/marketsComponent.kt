@@ -404,7 +404,7 @@ fun navigationBar(userId:String, token: String,navController: NavController){
     Box(modifier = Modifier.fillMaxSize().height(116.dp),  contentAlignment = Alignment.BottomCenter,){
 
         IconButton(
-            onClick = {navController.navigate("mycart")},
+            onClick = {navController.navigate("Cart/${userId}/${token}")},
             modifier =  Modifier.padding(bottom = 60.dp).height(60.dp).width(60.dp)
                 .fillMaxSize()
                 .clip(CircleShape)

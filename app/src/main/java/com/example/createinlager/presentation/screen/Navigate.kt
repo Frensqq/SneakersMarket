@@ -12,6 +12,7 @@ import com.example.createinlager.presentation.screen.authentication.RegisterAcc
 import com.example.createinlager.presentation.screen.authentication.SingIn
 import com.example.createinlager.presentation.screen.authentication.Verification
 import com.example.createinlager.presentation.screen.authentication.forgotPassword
+import com.example.createinlager.presentation.screen.markets.Cart
 import com.example.createinlager.presentation.screen.markets.Category
 import com.example.createinlager.presentation.screen.markets.Favorites
 import com.example.createinlager.presentation.screen.markets.Home
@@ -65,6 +66,11 @@ fun Navigate() {
             val userId = backStackEntry.arguments?.getString("userIdToSearch")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToSearch")?: ""
             Search(userId,token,  navController)
+        }
+        composable("Cart/{userIdToHome}/{tokenToHome}") {backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userIdToCart")?: ""
+            val token =  backStackEntry.arguments?.getString("tokenToCart")?: ""
+            Cart(userId,token,  navController)
         }
 
     }
