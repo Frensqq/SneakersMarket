@@ -51,23 +51,24 @@ fun Navigate() {
             val userId = backStackEntry.arguments?.getString("userIdToHomeTWO")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToHomeTWO")?: ""
             Category(typeCross = typeCross,userId, token,navController) }
-        composable("Details/{sneakersId}/{userIdToDetails}/{tokenToDetails}/{CurretidFavorite}") { backStackEntry ->
+        composable("Details/{sneakersId}/{userIdToDetails}/{tokenToDetails}/{CurretidFavorite}/{CurretidInCart}") { backStackEntry ->
             val sneakersId = backStackEntry.arguments?.getString("sneakersId")?: ""
             val userId = backStackEntry.arguments?.getString("userIdToDetails")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToDetails")?: ""
             val CurretidFavorite = backStackEntry.arguments?.getString("CurretidFavorite")?: ""
-            SneakersDetails(sneakersId,userId, token, CurretidFavorite,navController) }
+            val CurretidInCart = backStackEntry.arguments?.getString("CurretidInCart")?: ""
+            SneakersDetails(sneakersId,userId, token, CurretidFavorite,CurretidInCart,navController) }
         composable("Favorite/{userIdToFavorite}/{tokenToFavorite}") {backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userIdToFavorite")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToFavorite")?: ""
             Favorites(userId,token,  navController)
         }
-        composable("Search/{userIdToHome}/{tokenToHome}") {backStackEntry ->
+        composable("Search/{userIdToSearch}/{tokenToSearch}") {backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userIdToSearch")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToSearch")?: ""
             Search(userId,token,  navController)
         }
-        composable("Cart/{userIdToHome}/{tokenToHome}") {backStackEntry ->
+        composable("Cart/{userIdToCart}/{tokenToCart}") {backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userIdToCart")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToCart")?: ""
             Cart(userId,token,  navController)

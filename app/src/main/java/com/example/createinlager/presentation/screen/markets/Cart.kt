@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -49,18 +50,21 @@ import com.example.createinlager.R
 import com.example.createinlager.data.ConverCartToArrayArray
 import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.presentation.screen.buttonBack
+import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
 import com.example.createinlager.presentation.screen.viewModels.viewMarketCart
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
 import com.example.createinlager.presentation.theme.ui.TitleCategoryType
 import com.example.createinlager.presentation.theme.ui.bottomText
 
 @Composable
-fun Cart(userId: String, token: String, navController: NavController, viewMarketCart: viewMarketCart = viewModel()){
+fun Cart(userId: String, token: String, navController: NavController, viewModel: MarketViewModel = viewModel(), viewMarketCart: viewMarketCart = viewModel()){
 
     var isInitialized by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         if (!isInitialized) {
-            viewMarketCart.viewCart("id != 'null'",  "+created", 150)
+            viewMarketCart.viewCart("iduser = '$userId'",  "+created", 150)
+            viewModel.SneakersImport("id != 'null'","+created",150)
+
             isInitialized = true
         }
     }
@@ -68,6 +72,7 @@ fun Cart(userId: String, token: String, navController: NavController, viewMarket
     val SneakersInCartClass = viewMarketCart.Carts.collectAsState()
     var sneakersInCart = ConverCartToArrayArray(SneakersInCartClass)
 
+    val SneakersClass = viewModel.sneakers.collectAsState()
 
 
 
@@ -90,23 +95,37 @@ fun Cart(userId: String, token: String, navController: NavController, viewMarket
             )
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(" товаров", style = bottomText, color = colorResource(R.color.text))
+
+        Spacer(modifier = Modifier.height(13.dp))
 
         if (sneakersInCart.isNotEmpty()) {
 
 
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Fixed(1),
+                verticalItemSpacing = 14.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
+                items(sneakersInCart.size) { index ->
 
-                BlueBox(2)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
 
-                SneakersRow("TEst Sneakers", "7400")
+                        BlueBox(sneakersInCart[index][0], sneakersInCart[index][1], sneakersInCart[index][2], userId)
 
-                RedBox("test", 0)
+                        SneakersRow("TEst Sneakers", "7400")
 
+                        RedBox(sneakersInCart[index][0])
+
+                    }
+
+                }
             }
         }
     }
@@ -117,9 +136,9 @@ fun Cart(userId: String, token: String, navController: NavController, viewMarket
 
 
 @Composable
-fun BlueBox(count: Int): Int{
+fun BlueBox(id: String,idSneakers: String,count: String,userId: String,viewMarketCart: viewMarketCart = viewModel() ): Int{
 
-    var countSneakers = remember { mutableStateOf(count)}
+    var countSneakers = remember { mutableStateOf(count.toInt())}
 
     Box(modifier = Modifier.height(104.dp).width(58.dp).clip(RoundedCornerShape(8.dp)).background(colorResource(R.color.accent))){
         Column(modifier = Modifier.padding(vertical = 14.dp).fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceBetween) {
@@ -131,6 +150,8 @@ fun BlueBox(count: Int): Int{
 
                     if (countSneakers.value<99) {
                         countSneakers.value += 1
+                        viewMarketCart.UpdateCart(id,userId,idSneakers, countSneakers.value)
+
                     }
 
                 }))
@@ -144,6 +165,7 @@ fun BlueBox(count: Int): Int{
 
                     if (countSneakers.value>1) {
                         countSneakers.value -= 1
+                        viewMarketCart.UpdateCart(id,userId,idSneakers, countSneakers.value)
                     }
                 }))
 
@@ -176,9 +198,9 @@ fun SneakersRow(NaneSneakers: String, Cost: String){
 }
 
 @Composable
-fun RedBox(idSneakers: String, count: Int){
+fun RedBox(id: String, viewMarketCart: viewMarketCart = viewModel() ) {
 
-    var countSneakers = remember { mutableStateOf(count)}
+
 
     Box(modifier = Modifier.height(104.dp).width(58.dp)
         .clip(RoundedCornerShape(8.dp))
@@ -188,7 +210,7 @@ fun RedBox(idSneakers: String, count: Int){
             contentDescription = null,
             tint = colorResource(R.color.block),
             modifier = Modifier.size(20.dp).clickable(onClick = {
-
+                viewMarketCart.delCart(id)
             }))
     }
 
@@ -201,11 +223,11 @@ fun RedBox(idSneakers: String, count: Int){
 fun testCart(){
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
 
-        BlueBox(2)
+        //BlueBox("2")
 
         SneakersRow("TEst Sneakers", "7400")
 
-        RedBox("test",0)
+        RedBox("test")
 
     }
 }

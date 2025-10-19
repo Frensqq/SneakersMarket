@@ -60,6 +60,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.createinlager.R
+import com.example.createinlager.data.ConverCartToArrayArray
 import com.example.createinlager.data.ConverToArrayArray
 import com.example.createinlager.data.ConverToFavoriteArrayArray
 import com.example.createinlager.data.model.FavoriteList
@@ -67,6 +68,7 @@ import com.example.createinlager.data.model.FavoriteResponse
 import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.domain.state.ResultState
 import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
+import com.example.createinlager.presentation.screen.viewModels.viewMarketCart
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
 import com.example.createinlager.presentation.theme.ui.bottomText
 import com.example.createinlager.presentation.theme.ui.miniTextButton
@@ -176,7 +178,7 @@ fun CategoryRow(token:String, id:String, typeCross:String, navController: NavCon
 //favorite1: Int, Cart1: Int, listFavorite: Array<Array<String>>,listCart: Array<Array<String>>,
 
 @Composable
-fun productСard(favorite: Int, listFavorite: Array<Array<String>>, iduser:String,token: String, sneakers: Array<String>, navController: NavController, viewModel: MarketViewModel = viewModel ()){
+fun productСard(favorite: Int, listFavorite: Array<Array<String>>,Cart: Int, listCart: Array<Array<String>>, iduser:String,token: String, sneakers: Array<String>, navController: NavController, viewModel: MarketViewModel = viewModel (), viewModelCart: viewMarketCart = viewModel ()){
 
 
     var loved by remember { mutableStateOf(false) }
@@ -191,10 +193,10 @@ fun productСard(favorite: Int, listFavorite: Array<Array<String>>, iduser:Strin
         CurretidFavorite = listFavorite[favorite][1]
     }
 
-//    if (Cart1 != (-1)) {
-//        inCart = true
-//        CurretidInCarts = listCart[Cart1][0]
-//    }
+    if (Cart != (-1)) {
+       inCart = true
+        CurretidInCarts = listCart[Cart][0]
+    }
 
     if (sneakers.isNotEmpty()) {
 
@@ -202,7 +204,7 @@ fun productСard(favorite: Int, listFavorite: Array<Array<String>>, iduser:Strin
             modifier = Modifier.width(160.dp).height(182.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(colorResource(R.color.white))
-                .clickable(onClick = {navController.navigate("Details/${sneakers[2]}/${iduser}/${token}/${CurretidFavorite}")})
+                .clickable(onClick = {navController.navigate("Details/${sneakers[2]}/${iduser}/${token}/${CurretidFavorite}/${CurretidInCarts}")})
         ) {
 
             Column(modifier = Modifier.padding(top = 9.dp, start = 9.dp, end = 9.dp).fillMaxSize()) {
@@ -311,8 +313,15 @@ fun productСard(favorite: Int, listFavorite: Array<Array<String>>, iduser:Strin
 
                     IconButton(
                         onClick = {
-                            inCart = !inCart
+                            if (!inCart) {
+                                viewModelCart.addtocart(iduser,sneakers[2])
 
+                                inCart = !inCart
+                            } else {
+                                viewModelCart.delCart(CurretidInCarts)
+                                inCart = !inCart
+
+                            }
                         },
                         modifier = Modifier.size(34.dp)
                     ) {
@@ -350,6 +359,15 @@ fun isFaforite(idsneakers:String, favoriteList: Array<Array<String>>): Int{
     }
     return -1
 }
+fun isInCart(idsneakers:String, cartList: Array<Array<String>>): Int{
+
+    for(i in cartList.indices){
+        if(idsneakers == cartList[i][1]){
+            return i
+        }
+    }
+    return -1
+}
 
 @Composable
 fun listFavorite(filter:String, viewModel: MarketViewModel = viewModel()): Array<Array<String>>{
@@ -362,15 +380,21 @@ fun listFavorite(filter:String, viewModel: MarketViewModel = viewModel()): Array
 }
 
 @Composable
+fun listCart(filter:String, viewModel: viewMarketCart = viewModel()): Array<Array<String>>{
+
+    viewModel.viewCart(filter, "+created",150)
+
+    val Cart = viewModel.Carts.collectAsState()
+
+    return ConverCartToArrayArray(Cart)
+}
+
+@Composable
 fun columnProducts(sneakers: Array<Array<String>>, iduser: String,token: String,  navController: NavController){
 
 
    val listFavorite = listFavorite("iduser = '$iduser'")
-
-
-//    val listCart = listCart("iduser = '$iduser'", token)
-
-
+    val listCart = listCart("iduser = '$iduser'")
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
@@ -387,6 +411,11 @@ fun columnProducts(sneakers: Array<Array<String>>, iduser: String,token: String,
                     listFavorite
                 ),
                 listFavorite,
+                isInCart(
+                    sneakers[index][2],
+                    listCart
+                ),
+                listCart,
                 iduser,
                 token,
                 sneakers[index],

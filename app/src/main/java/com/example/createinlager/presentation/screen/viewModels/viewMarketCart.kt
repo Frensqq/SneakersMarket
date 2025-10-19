@@ -1,13 +1,26 @@
 package com.example.createinlager.presentation.screen.viewModels
 
 import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.imageResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.createinlager.R
 import com.example.createinlager.data.model.ErrorResponce
 import com.example.createinlager.data.remote.PocketBaseApiService
 import com.example.createinlager.domain.model.CartRequest
 import com.example.createinlager.domain.state.ResultState
+import com.example.createinlager.presentation.theme.ui.bottomText
 import com.example.professionals.data.model.market.InCart
 import com.example.professionals.data.model.market.ListInCart
 import com.google.gson.Gson
@@ -164,7 +177,7 @@ class viewMarketCart: ViewModel() {
                 CartRequest(
                     iduser = iduser,
                     idsneakers = idsneakers,
-                    count = 1
+                    count = count
                 ),
             ).enqueue(object : Callback<ListInCart> {
                 override fun onResponse(call: Call<ListInCart>, response: Response<ListInCart>) {
@@ -197,6 +210,44 @@ class viewMarketCart: ViewModel() {
                 }
             })
         }
+    }
+
+}
+
+
+@Composable
+fun ButtonMenu(  ArrayInCart:Array<Array<String>>, twoDArray:Array<Array<String>>, toChecking:Boolean){
+
+    var globalCost =0
+    var count =0
+
+    for (i in 0..ArrayInCart.size-1){
+
+        for (j in 0 ..twoDArray.size-1){
+            if (twoDArray[j][0]  ==ArrayInCart[i][1]){
+                globalCost += (ArrayInCart[i][2].toInt()*twoDArray[j][2].toInt())
+                count+=ArrayInCart[i][2].toInt()
+            }
+        }
+    }
+
+    count*=100
+
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text("Сумма", style = bottomText, color = colorResource(R.color.subtextdark))
+        Text("₽"+globalCost.toString(), style = bottomText, color = colorResource(R.color.text))
+
+    }
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text("Доставка", style = bottomText,color = colorResource(R.color.subtextdark))
+        Text("₽"+count.toString(), style = bottomText, color = colorResource(R.color.text))
+    }
+
+
+
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text("Итого", style = bottomText, color = colorResource(R.color.text))
+        Text("₽"+(globalCost+count).toString(), style = bottomText, color = colorResource(R.color.accent))
     }
 
 }

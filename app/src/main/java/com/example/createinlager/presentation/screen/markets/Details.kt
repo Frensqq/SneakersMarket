@@ -67,6 +67,7 @@ import com.example.createinlager.R
 import com.example.createinlager.data.ConverToArrayArray
 import com.example.createinlager.presentation.screen.buttonBack
 import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
+import com.example.createinlager.presentation.screen.viewModels.viewMarketCart
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
 import com.example.createinlager.presentation.theme.ui.TextInfo
@@ -76,7 +77,7 @@ import com.example.createinlager.presentation.theme.ui.TitleDetails
 import com.example.createinlager.presentation.theme.ui.TypeCostDetails
 
 @Composable
-fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFavorites: String, navController: NavController, viewModel: MarketViewModel = viewModel()){
+fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFavorites: String,CurretidInCarts: String, navController: NavController, viewModel: MarketViewModel = viewModel(), viewModelCart: viewMarketCart = viewModel()){
 
     var isInitialized by remember { mutableStateOf(false) }
 
@@ -185,15 +186,11 @@ fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFav
 
         val listFavorite = listFavorite("(iduser = '$userId')&&(idsneakers = '${sneakersId}')")
 
-
-        var inCart by remember { mutableStateOf(false) }
+        var CurretidInCart by remember { mutableStateOf(CurretidInCarts) }
+        var inCart by remember { mutableStateOf(CurretidInCart.isNotEmpty()) }
         var CurretidFavorite = remember { mutableStateOf(CurretidFavorites) }
         var loved by remember { mutableStateOf(CurretidFavorite.value.isNotEmpty()) }
-        var CurretidInCarts by remember { mutableStateOf("") }
 
-        if (listFavorite.isNotEmpty()){
-            CurretidFavorite.value = listFavorite[0][1]
-        }
 
         Box(modifier = Modifier.padding(bottom = 40.dp).fillMaxSize(), contentAlignment = Alignment.BottomCenter){
             Row(modifier = Modifier.padding(horizontal = 20.dp)) {
@@ -202,14 +199,10 @@ fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFav
                         if (loved){
                             viewModel.DeleteFavorite(CurretidFavorite.value)
 
-
                             loved = false
                         }
                         else{
                             viewModel.CreateFavorite(userId,sneakersId)
-
-
-
 
                             loved = true
                         }
@@ -236,7 +229,14 @@ fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFav
 
 
                     Button(onClick = {
-                        inCart = !inCart
+                        if (!inCart) {
+                            viewModelCart.addtocart(userId,sneakersId)
+                            inCart = !inCart
+                        } else {
+                            viewModelCart.delCart(CurretidInCarts)
+                            inCart = !inCart
+
+                        }
 
                     },
                         modifier = Modifier.padding(start = 18.dp)
