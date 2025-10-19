@@ -6,6 +6,8 @@ import androidx.compose.runtime.remember
 import com.example.createinlager.data.model.FavoriteList
 import com.example.createinlager.data.model.FavoriteResponse
 import com.example.createinlager.data.model.Sneakers
+import com.example.professionals.data.model.market.InCart
+import com.example.professionals.data.model.market.ListInCart
 import kotlin.collections.map
 
 @Composable
@@ -43,6 +45,22 @@ fun ConverToFavoriteArrayArray(favorits:  State<List<FavoriteResponse>>): Array<
                 favorit.iduser,
                 favorit.id,
                 favorit.idsneakers
+            )
+        }.toTypedArray()
+    }
+    return twoDArray
+}
+
+@Composable
+fun ConverCartToArrayArray(favorits:  State<List<InCart>>): Array<Array<String>>{
+
+
+    val twoDArray = remember(favorits.value) {
+        favorits.value.map { favorit ->
+            arrayOf(
+                favorit.id,
+                favorit.idsneakers,
+                favorit.count.toString()
             )
         }.toTypedArray()
     }

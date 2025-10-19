@@ -91,7 +91,7 @@ fun Favorites(userId: String,token:String,navController: NavController, viewMode
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        if (ClassSnekers.value.isNotEmpty()) {
+        if (ListSneakers.isNotEmpty()) {
             columnProducts(ListFavoriteSneakers, userId, token, navController)
         }
 

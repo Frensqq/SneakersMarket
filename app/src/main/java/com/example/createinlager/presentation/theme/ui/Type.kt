@@ -121,6 +121,15 @@ val TextFieldPlace = TextStyle(
     lineHeight = 16.sp,
 )
 
+val TypeIntCart = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 14.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.sp
+
+)
+
 val TextInfo = TextStyle(
     fontFamily = RaleWayFamily,
     fontWeight = FontWeight(400),

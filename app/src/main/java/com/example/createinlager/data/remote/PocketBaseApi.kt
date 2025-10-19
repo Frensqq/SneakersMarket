@@ -6,12 +6,14 @@ import com.example.createinlager.data.model.OtpResponse
 import com.example.createinlager.data.model.SneakersView
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.model.FavoriteResponse
+import com.example.createinlager.domain.model.CartRequest
 import com.example.createinlager.domain.model.ChangePassRequest
 import com.example.createinlager.domain.model.OtpAuth
 import com.example.createinlager.domain.model.OtpRequest
 import com.example.createinlager.domain.model.UserAuth
 import com.example.createinlager.domain.model.UserRequest
 import com.example.createinlager.domain.model.favoriteRequest
+import com.example.professionals.data.model.market.ListInCart
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -65,6 +67,20 @@ interface PocketBaseApi {
     //Удаление заказа из избранного
     @DELETE("/api/collections/Love/records/{id}")
     fun deleteFavorite(@Path("id") id: String): Call<Unit>
+
+    //корзина
+
+    @POST("/api/collections/Cart/records")
+    fun addToСart(@Body request: CartRequest): Call<ListInCart>
+
+    @DELETE("/api/collections/Cart/records/{id}")
+    fun deleteСart(@Path("id") id: String): Call<Unit>
+
+    @GET("/api/collections/Cart/records")
+    fun ViewСart(@Query("filter") filter: String, @Query("sort") sort: String, @Query("perPage") perPage: Int ): Call<ListInCart>
+
+    @PATCH("/api/collections/Cart/records/{id}")
+    fun updateCart(@Path("id") id: String,@Body request: CartRequest ): Call<ListInCart>
 
 
 }
