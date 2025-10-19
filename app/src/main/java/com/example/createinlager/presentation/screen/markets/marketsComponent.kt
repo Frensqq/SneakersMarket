@@ -227,7 +227,6 @@ fun productСard(favorite: Int, listFavorite: Array<Array<String>>, iduser:Strin
                                 viewModel.ViewFavorite(
                                     "(iduser = '$iduser')&&(idsneakers = '${sneakers[2]}')",
                                 )
-                                idFavorite.value = viewModel.getId()
 
                                 loved = true
                             }
