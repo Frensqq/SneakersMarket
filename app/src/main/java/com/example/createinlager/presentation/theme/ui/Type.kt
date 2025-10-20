@@ -155,6 +155,22 @@ val nameTextField = TextStyle(
     letterSpacing = 0.sp
 )
 
+val cartSmallTitleStyle = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(500),
+    fontSize = 14.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.sp
+)
+
+val cartSmallTitleStyleTwo = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(500),
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.sp
+)
+
 val TextUnderLine = TextStyle(fontFamily = RaleWayFamily,
 fontWeight = FontWeight.Normal,
 fontSize = 16.sp,
