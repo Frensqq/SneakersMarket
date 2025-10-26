@@ -1,6 +1,9 @@
 package com.example.createinlager.presentation.screen.markets
 
+import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,18 +22,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.createinlager.R
+import com.example.createinlager.presentation.MainActivity
 import com.example.createinlager.presentation.theme.ui.cartSmallTitleStyle
 import com.example.createinlager.presentation.theme.ui.cartSmallTitleStyleTwo
 import com.example.createinlager.presentation.theme.ui.miniTextButton
 import com.example.createinlager.presentation.theme.ui.nameTextField
+import com.google.android.play.integrity.internal.b
+import com.google.android.play.integrity.internal.m
+import kotlin.jvm.java
 
 @Composable
 fun CheckoutEmpty(){
+
+
 
     Box(modifier = Modifier.fillMaxWidth()
         .height(413.dp)
@@ -52,23 +66,36 @@ fun CheckoutEmpty(){
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Row(modifier = Modifier.fillMaxWidth().height(44.dp)) {
+            Row(modifier = Modifier.fillMaxWidth().height(44.dp), horizontalArrangement = Arrangement.SpaceBetween) {
 
                     Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
                         Text("Адрес", style = cartSmallTitleStyle, color = colorResource(R.color.text))
                         Text("Тут будет адрес", style = miniTextButton, color = colorResource(R.color.hint))
                     }
 
+                Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.BottomEnd) {
+                    Icon(
+                        bitmap = ImageBitmap.imageResource(R.drawable.edit),
+                        tint = colorResource(R.color.hint),
+                        contentDescription = null,
+                        modifier = Modifier.size(15.dp)
+                    )
+                }
+
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             //Map
+            val context = LocalContext.current
 
             Box(modifier = Modifier.fillMaxWidth()
                 .height(101.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(colorResource(R.color.disable)))
+                .background(colorResource(R.color.disable)).clickable(onClick = {
+                    context.startActivity(Intent(context, MainActivityTwo::class.java))}
+                )
+            )
 
             //
 
@@ -94,11 +121,14 @@ fun CheckoutEmpty(){
 fun RowCheckoutEmpty(TextType: String){
 
     var textPrew =""
+    var icon = R.drawable.edit
 
     if (TextType == "Email"){
+        icon = R.drawable.email
         textPrew = "*******@****.***"
     }
     else{
+        icon = R.drawable.phone
         textPrew = "**_***_***_****"
     }
 
@@ -110,17 +140,21 @@ fun RowCheckoutEmpty(TextType: String){
             .clip(RoundedCornerShape(12.dp))
             .background(colorResource(R.color.background)), contentAlignment = Alignment.Center
         ){
+            Icon(bitmap = ImageBitmap.imageResource(icon), tint = colorResource(R.color.text), contentDescription = null, modifier = Modifier.size(20.dp))
+
         }
 
         Column(modifier = Modifier.padding(start = 12.dp).fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
-            Text(textPrew, style = cartSmallTitleStyleTwo, color = colorResource(R.color.text))
+            Text(textPrew, style = cartSmallTitleStyleTwo, color = colorResource(R.color.text), modifier = Modifier.height(20.dp))
             Text(TextType, style = miniTextButton, color = colorResource(R.color.hint))
         }
 
-        Box(modifier = Modifier
+        Box(modifier = Modifier.fillMaxWidth()
             .fillMaxHeight()
-            , contentAlignment = Alignment.Center
+            , contentAlignment = Alignment.CenterEnd
         ){
+            Icon(bitmap = ImageBitmap.imageResource(R.drawable.edit), tint = colorResource(R.color.hint), contentDescription = null, modifier = Modifier.size(15.dp))
+
         }
 
     }
@@ -141,6 +175,7 @@ fun RowCheckoutEmptyCard(TextType: String){
             .clip(RoundedCornerShape(12.dp))
             .background(colorResource(R.color.background)), contentAlignment = Alignment.Center
         ){
+            Image(bitmap = ImageBitmap.imageResource(R.drawable.cardicon),  contentDescription = null, modifier = Modifier.size(32.dp), contentScale = ContentScale.FillWidth)
         }
 
         Column(modifier = Modifier.padding(start = 12.dp).fillMaxHeight()) {
