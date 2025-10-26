@@ -16,6 +16,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+
     }
 
     buildTypes {
@@ -36,6 +41,14 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
@@ -62,4 +75,16 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // Подключаем конвертер для работы с JSON
     implementation("androidx.navigation:navigation-compose")
+    implementation(libs.play.services.maps)
+
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation (libs.maps.mobile)
+    implementation("ru.sulgik.mapkit:yandex-mapkit-kmp-compose:0.1.1")
+
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.31.2-alpha")
+
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
 }
