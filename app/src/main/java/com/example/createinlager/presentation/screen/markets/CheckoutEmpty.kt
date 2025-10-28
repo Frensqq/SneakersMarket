@@ -19,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,12 +41,17 @@ import com.example.createinlager.presentation.theme.ui.miniTextButton
 import com.example.createinlager.presentation.theme.ui.nameTextField
 import com.google.android.play.integrity.internal.b
 import com.google.android.play.integrity.internal.m
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.sync.Mutex
 import kotlin.jvm.java
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun CheckoutEmpty(){
 
-
+    var stateScreenEmpty = remember { mutableStateOf(true) }
 
     Box(modifier = Modifier.fillMaxWidth()
         .height(413.dp)
@@ -54,35 +61,54 @@ fun CheckoutEmpty(){
 
         Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
 
-            Text("Контактная информация", style = cartSmallTitleStyle, color = colorResource(R.color.text))
+            Text(stateScreenEmpty.value.toString() + "Контактная информация", style = cartSmallTitleStyle, color = colorResource(R.color.text))
 
-            Spacer(modifier = Modifier.height(16.dp))
 
-            RowCheckoutEmpty("Email")
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                stateScreenEmpty.value = rowCheckoutEmpty("Email", stateScreenEmpty.value)
 
-            RowCheckoutEmpty("Телефон")
+                Spacer(modifier = Modifier.height(16.dp))
+                stateScreenEmpty.value = rowCheckoutEmpty("Телефон", stateScreenEmpty.value)
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            Row(modifier = Modifier.fillMaxWidth().height(44.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().height(44.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
 
-                    Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
-                        Text("Адрес", style = cartSmallTitleStyle, color = colorResource(R.color.text))
-                        Text("Тут будет адрес", style = miniTextButton, color = colorResource(R.color.hint))
+                    Column(
+                        modifier = Modifier.fillMaxHeight(),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            "Адрес",
+                            style = cartSmallTitleStyle,
+                            color = colorResource(R.color.text)
+                        )
+                        Text(
+                            "Тут будет адрес",
+                            style = miniTextButton,
+                            color = colorResource(R.color.hint)
+                        )
                     }
 
-                Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.BottomEnd) {
-                    Icon(
-                        bitmap = ImageBitmap.imageResource(R.drawable.edit),
-                        tint = colorResource(R.color.hint),
-                        contentDescription = null,
-                        modifier = Modifier.size(15.dp)
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxHeight(),
+                        contentAlignment = Alignment.BottomEnd
+                    ) {
+                        Icon(
+                            bitmap = ImageBitmap.imageResource(R.drawable.edit),
+                            tint = colorResource(R.color.hint),
+                            contentDescription = null,
+                            modifier = Modifier.size(15.dp).clickable(onClick = {stateScreenEmpty.value = !stateScreenEmpty.value})
+                        )
+                    }
+
                 }
 
-            }
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -118,7 +144,9 @@ fun CheckoutEmpty(){
 }
 
 @Composable
-fun RowCheckoutEmpty(TextType: String){
+fun rowCheckoutEmpty(TextType: String, state: Boolean): Boolean{
+
+    var stateScreen = state
 
     var textPrew =""
     var icon = R.drawable.edit
@@ -132,6 +160,7 @@ fun RowCheckoutEmpty(TextType: String){
         textPrew = "**_***_***_****"
     }
 
+
     Row(modifier = Modifier.fillMaxWidth().height(40.dp)) {
 
 
@@ -140,7 +169,8 @@ fun RowCheckoutEmpty(TextType: String){
             .clip(RoundedCornerShape(12.dp))
             .background(colorResource(R.color.background)), contentAlignment = Alignment.Center
         ){
-            Icon(bitmap = ImageBitmap.imageResource(icon), tint = colorResource(R.color.text), contentDescription = null, modifier = Modifier.size(20.dp))
+            Icon(bitmap = ImageBitmap.imageResource(icon),
+                tint = colorResource(R.color.text), contentDescription = null, modifier = Modifier.size(20.dp))
 
         }
 
@@ -153,11 +183,16 @@ fun RowCheckoutEmpty(TextType: String){
             .fillMaxHeight()
             , contentAlignment = Alignment.CenterEnd
         ){
-            Icon(bitmap = ImageBitmap.imageResource(R.drawable.edit), tint = colorResource(R.color.hint), contentDescription = null, modifier = Modifier.size(15.dp))
+            Icon(bitmap = ImageBitmap.imageResource(R.drawable.edit),
+                tint = colorResource(R.color.hint),
+                contentDescription = null,
+                modifier = Modifier.size(15.dp).clickable(onClick = {stateScreen = !stateScreen}))
 
         }
-
+        return stateScreen
     }
+    return stateScreen
+
 }
 
 

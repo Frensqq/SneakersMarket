@@ -220,5 +220,13 @@ val TitleDetails = TextStyle(
     letterSpacing = 0.sp,
 )
 
+val ProfileName = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 20.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.sp,
+)
+
 
 

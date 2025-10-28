@@ -23,6 +23,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,6 +59,7 @@ import com.example.createinlager.presentation.screen.AccentLongButton
 import com.example.createinlager.presentation.screen.buttonBack
 import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
 import com.example.createinlager.presentation.screen.viewModels.viewMarketCart
+import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
 import com.example.createinlager.presentation.theme.ui.TitleCategoryType
 import com.example.createinlager.presentation.theme.ui.bottomText
@@ -74,8 +77,8 @@ fun Cart(userId: String, token: String, navController: NavController, viewModel:
         }
     }
 
-    var state = false
-    var StateScreen = remember { mutableStateOf(state) }
+    var state = true
+    var StateScreen = remember { mutableStateOf(true) }
 
 
     val SneakersInCartClass = viewMarketCart.Carts.collectAsState()
@@ -190,7 +193,26 @@ fun Cart(userId: String, token: String, navController: NavController, viewModel:
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
 
         Box(modifier = Modifier.fillMaxWidth().height(258.dp).background(colorResource(R.color.block))){
-            state = ButtonMenu(sneakersInCart, sneakers, StateScreen.value)
+            Column {
+                StateScreen.value =
+                    ButtonMenu(sneakersInCart, sneakers, StateScreen.value, "Оформить заказ")
+
+                Button(
+                    onClick = { StateScreen.value = !StateScreen.value },
+                    enabled = true,
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                        .height(50.dp)
+                        .fillMaxSize(),
+                    shape = RoundedCornerShape(13.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = colorResource(R.color.disable),
+                        containerColor = colorResource(R.color.accent),
+                        contentColor = colorResource(R.color.block)
+                    )
+                ) {
+                    Text("Оформить заказ", style = ButtonText, color = colorResource(R.color.block))
+                }
+            }
         }
 
     }
@@ -281,7 +303,7 @@ fun RedBox(id: String, viewMarketCart: viewMarketCart = viewModel() ) {
 }
 
 @Composable
-fun ButtonMenu(  ArrayInCart:Array<Array<String>>, twoDArray:Array<Array<String>>, toChecking:Boolean): Boolean {
+fun ButtonMenu(  ArrayInCart:Array<Array<String>>, twoDArray:Array<Array<String>>, toChecking:Boolean, textButton: String): Boolean {
 
     var globalCost =0
     var count =0
@@ -330,7 +352,7 @@ Column(modifier = Modifier.padding(horizontal = 20.dp)) {
 
     Spacer(modifier = Modifier.height(34.dp))
 
-    AccentLongButton({StateScreen = false},"Оформить заказ",true)
+
 }
 
     return StateScreen
