@@ -504,7 +504,7 @@ fun RowInBox(userId:String, token: String,navController: NavController){
         }
 
         IconButton(
-            onClick = {  },
+            onClick = { navController.navigate("Profile/${userId}/${token}")},
             modifier =  Modifier
                 .fillMaxHeight() // Размер кнопки
         ) {

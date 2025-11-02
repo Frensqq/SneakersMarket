@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.presentation.screen.OnBoards.OnBoards
+import com.example.createinlager.presentation.screen.Profile.SideMenu
 import com.example.createinlager.presentation.screen.authentication.CreateNewPassword
 import com.example.createinlager.presentation.screen.authentication.RegisterAcc
 import com.example.createinlager.presentation.screen.authentication.SingIn
@@ -72,6 +73,11 @@ fun Navigate() {
             val userId = backStackEntry.arguments?.getString("userIdToCart")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToCart")?: ""
             Cart(userId,token,  navController)
+        }
+        composable("Profile/{userIdToProfile}/{tokenToProfile}") {backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userIdToProfile")?: ""
+            val token =  backStackEntry.arguments?.getString("tokenToProfile")?: ""
+            SideMenu(userId,token,  navController)
         }
 
     }

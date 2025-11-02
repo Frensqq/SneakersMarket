@@ -23,11 +23,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.createinlager.R
 import com.example.createinlager.presentation.theme.ui.ProfileName
 
 @Composable
-fun SideMenu(){
+fun SideMenu(userId: String, token: String, navController: NavController){
 
     Box(modifier = Modifier.fillMaxSize().background(Color(0xff48b2e7))) {
 
@@ -89,7 +90,7 @@ fun ProfileRow(icon: Int, text: String){
 @Composable
 fun testSideMenu(){
 
-    SideMenu()
+
 
 
 
