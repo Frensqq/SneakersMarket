@@ -74,6 +74,14 @@ val TitleType = TextStyle(
     letterSpacing = 0.sp
 )
 
+val mapText = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(700),
+    fontSize = 20.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.sp
+)
+
 val TitleCategoryType = TextStyle(
     fontFamily = RaleWayFamily,
     fontWeight = FontWeight(600),
@@ -225,6 +233,14 @@ val ProfileName = TextStyle(
     fontWeight = FontWeight(400),
     fontSize = 20.sp,
     lineHeight = 20.sp,
+    letterSpacing = 0.sp,
+)
+
+val checkouttype = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 20.sp,
+    lineHeight = 28.sp,
     letterSpacing = 0.sp,
 )
 

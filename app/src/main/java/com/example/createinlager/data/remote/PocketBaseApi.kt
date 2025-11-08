@@ -31,6 +31,16 @@ interface PocketBaseApi {
     @POST("/api/collections/users/records")
     fun RegistrationUser(@Body request: UserRequest ): Call<UserResponse>
 
+    //Просмотр пользоавтеля
+
+    @GET("/api/collections/users/records/{userId}")
+    fun UserView(@Path("userId") userId: String): Call<UserResponse>
+
+    //Обновление пользователя
+
+    @PATCH("/api/collections/users/records/{userId}")
+    fun UserUpdate(@Body request: UserRequest, @Path("userId") userId: String): Call<UserResponse>
+
     ///Авторизация
 
     @POST("/api/collections/users/auth-with-password")

@@ -46,7 +46,7 @@ class MarketViewModel: ViewModel() {
 
     fun getImage(collectionId:String, idsneakers: String, image:String): String {
         val imageUrl =
-            "http://10.0.2.2:8090/api/files/${collectionId}/${idsneakers}/${image}"
+            "http://192.168.31.176:8090/api/files/${collectionId}/${idsneakers}/${image}"
         Log.i("Image", imageUrl)
         return imageUrl
     }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import com.example.createinlager.data.model.FavoriteList
 import com.example.createinlager.data.model.FavoriteResponse
 import com.example.createinlager.data.model.Sneakers
+import com.example.createinlager.data.model.UserResponse
 import com.example.professionals.data.model.market.InCart
 import com.example.professionals.data.model.market.ListInCart
 import kotlin.collections.map
@@ -29,6 +30,30 @@ fun ConverToArrayArray(sneakers:  State<List<Sneakers>>): Array<Array<String>>{
                 sneaker.watch,
                 sneaker.created,
                 sneaker.updated
+            )
+        }.toTypedArray()
+    }
+    return twoDArray
+}
+
+@Composable
+fun ConvertUserToArrayArray(users:  State<List<UserResponse>>): Array<Array<String>>{
+
+    val twoDArray = remember(users.value) {
+        users.value.map { user ->
+            arrayOf(
+                user.collectionId, // [0]
+                user.collectionName,
+                user.id,
+                user.name,
+                user.email,
+                user.address,
+                user.avatar,
+                user.card,
+                user.phoneNumber,
+                user.surname,
+                user.created,
+                user.updated
             )
         }.toTypedArray()
     }

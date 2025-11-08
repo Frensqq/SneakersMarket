@@ -10,18 +10,28 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
@@ -47,11 +57,26 @@ import kotlin.jvm.java
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
+import com.example.createinlager.data.ConverToArrayArray
+import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
+import com.example.createinlager.presentation.theme.ui.TypeIntCart
+import com.example.createinlager.presentation.theme.ui.bottomText
+import com.example.createinlager.presentation.theme.ui.checkouttype
+import com.example.createinlager.presentation.theme.ui.mapText
+import com.example.createinlager.presentation.theme.ui.textInFiedMarket
 
 @Composable
 fun CheckoutEmpty(){
 
-    var stateScreenEmpty = remember { mutableStateOf(true) }
+    var stateScreenEmpty by remember { mutableStateOf(true) }
 
     Box(modifier = Modifier.fillMaxWidth()
         .height(413.dp)
@@ -61,15 +86,24 @@ fun CheckoutEmpty(){
 
         Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
 
-            Text(stateScreenEmpty.value.toString() + "Контактная информация", style = cartSmallTitleStyle, color = colorResource(R.color.text))
+            Text( "Контактная информация", style = cartSmallTitleStyle, color = colorResource(R.color.text))
+            Spacer(modifier = Modifier.height(16.dp))
 
+                if (stateScreenEmpty) {
 
+                    RowCheckoutEmpty("Email", { stateScreenEmpty = !stateScreenEmpty })
 
-                Spacer(modifier = Modifier.height(16.dp))
-                stateScreenEmpty.value = rowCheckoutEmpty("Email", stateScreenEmpty.value)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    RowCheckoutEmpty("Телефон", { stateScreenEmpty = !stateScreenEmpty })
+                }
+                else{
 
-                Spacer(modifier = Modifier.height(16.dp))
-                stateScreenEmpty.value = rowCheckoutEmpty("Телефон", stateScreenEmpty.value)
+                    RowCheckoutEmptyEdit(R.drawable.mail, { stateScreenEmpty = !stateScreenEmpty }, "Email")
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    RowCheckoutEmptyEdit(R.drawable.phone, { stateScreenEmpty = !stateScreenEmpty }, "Phone")
+
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -102,7 +136,7 @@ fun CheckoutEmpty(){
                             bitmap = ImageBitmap.imageResource(R.drawable.edit),
                             tint = colorResource(R.color.hint),
                             contentDescription = null,
-                            modifier = Modifier.size(15.dp).clickable(onClick = {stateScreenEmpty.value = !stateScreenEmpty.value})
+                            modifier = Modifier.size(15.dp).clickable(onClick = {stateScreenEmpty = !stateScreenEmpty})
                         )
                     }
 
@@ -121,7 +155,23 @@ fun CheckoutEmpty(){
                 .background(colorResource(R.color.disable)).clickable(onClick = {
                     context.startActivity(Intent(context, MainActivityTwo::class.java))}
                 )
-            )
+            ){
+                Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+
+                    Text("Посмотреть на карте", style = mapText, color = colorResource(R.color.block), textAlign = TextAlign.Center)
+
+                    Box(modifier = Modifier.size(36.dp)
+                        .clip(RoundedCornerShape(100))
+                        .background(colorResource(R.color.accent)),
+                        contentAlignment = Alignment.Center){
+
+                        Icon(bitmap = ImageBitmap.imageResource(R.drawable.marker),
+                            contentDescription = null,
+                            tint = colorResource(R.color.block),
+                            modifier = Modifier.size(20.dp))
+                    }
+                }
+            }
 
             //
 
@@ -144,55 +194,154 @@ fun CheckoutEmpty(){
 }
 
 @Composable
-fun rowCheckoutEmpty(TextType: String, state: Boolean): Boolean{
+fun RowCheckoutEmpty(TextType: String, onClick: () -> Unit) {
 
-    var stateScreen = state
-
-    var textPrew =""
+    var textPrew = ""
     var icon = R.drawable.edit
 
-    if (TextType == "Email"){
+    if (TextType == "Email") {
         icon = R.drawable.email
         textPrew = "*******@****.***"
-    }
-    else{
+    } else {
         icon = R.drawable.phone
         textPrew = "**_***_***_****"
     }
 
-
-    Row(modifier = Modifier.fillMaxWidth().height(40.dp)) {
-
-
-        Box(modifier = Modifier
-            .size(40.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(colorResource(R.color.background)), contentAlignment = Alignment.Center
-        ){
-            Icon(bitmap = ImageBitmap.imageResource(icon),
-                tint = colorResource(R.color.text), contentDescription = null, modifier = Modifier.size(20.dp))
-
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(colorResource(R.color.background)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                bitmap = ImageBitmap.imageResource(icon),
+                tint = colorResource(R.color.text),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
         }
 
-        Column(modifier = Modifier.padding(start = 12.dp).fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
-            Text(textPrew, style = cartSmallTitleStyleTwo, color = colorResource(R.color.text), modifier = Modifier.height(20.dp))
-            Text(TextType, style = miniTextButton, color = colorResource(R.color.hint))
+        Column(
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                textPrew,
+                style = cartSmallTitleStyleTwo,
+                color = colorResource(R.color.text),
+                modifier = Modifier.height(20.dp)
+            )
+            Text(
+                TextType,
+                style = miniTextButton,
+                color = colorResource(R.color.hint)
+            )
         }
 
-        Box(modifier = Modifier.fillMaxWidth()
-            .fillMaxHeight()
-            , contentAlignment = Alignment.CenterEnd
-        ){
-            Icon(bitmap = ImageBitmap.imageResource(R.drawable.edit),
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Icon(
+                bitmap = ImageBitmap.imageResource(R.drawable.edit),
                 tint = colorResource(R.color.hint),
                 contentDescription = null,
-                modifier = Modifier.size(15.dp).clickable(onClick = {stateScreen = !stateScreen}))
-
+                modifier = Modifier
+                    .size(15.dp)
+                    .clickable(onClick = onClick)
+            )
         }
-        return stateScreen
     }
-    return stateScreen
+}
 
+
+@Composable
+fun RowCheckoutEmptyEdit(leadIcon: Int, onClick: () -> Unit, TextType: String): String {
+
+    var textPrew = ""
+    var icon = R.drawable.edit
+
+    if (TextType == "Email") {
+        icon = R.drawable.email
+        textPrew = "*******@****.***"
+    } else {
+        icon = R.drawable.phone
+        textPrew = "**_***_***_****"
+    }
+
+    //val SneakersList = viewModel.sneakers.collectAsState()
+//    var sneakers: Array<Array<String>> = emptyArray()
+//    if (SneakersList.value.isNotEmpty()) {
+//        sneakers = ConverToArrayArray(SneakersList)
+//    }
+
+    val string = remember { mutableStateOf("") }
+
+
+    Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        OutlinedTextField(
+            value = string.value,
+            onValueChange = { string.value = it },
+            modifier = Modifier.fillMaxWidth(0.9f).height(52.dp),
+            textStyle = TypeIntCart,
+            leadingIcon = {
+                Icon(
+                    bitmap = ImageBitmap.imageResource(leadIcon),
+                    tint = colorResource(R.color.text),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+            },
+            placeholder = { Text(textPrew, style = textInFiedMarket) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = colorResource(R.color.accent),
+                unfocusedBorderColor = colorResource(R.color.background),
+                focusedContainerColor = colorResource(R.color.background),
+                unfocusedContainerColor = colorResource(R.color.background),
+                unfocusedTextColor = colorResource(R.color.text),
+                focusedTextColor = colorResource(R.color.text),
+                disabledContainerColor = colorResource(R.color.white)
+
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(onDone = {
+
+            }
+            ),
+            shape = RoundedCornerShape(12.dp),
+            singleLine = true,
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth().height(52.dp),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Icon(
+                bitmap = ImageBitmap.imageResource(R.drawable.edit),
+                tint = colorResource(R.color.hint),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(15.dp)
+                    .clickable(onClick = onClick)
+            )
+        }
+
+    }
+    return string.value
 }
 
 
@@ -228,3 +377,59 @@ fun RowCheckoutEmptyCard(TextType: String){
     }
 }
 
+@Composable
+fun Checkout(){
+
+    AlertDialog(
+        onDismissRequest = { true },
+        containerColor = Color.White,
+        modifier = Modifier.fillMaxWidth().height(375.dp),
+        icon = {
+            Box(modifier = Modifier.padding(top=20.dp).size(134.dp).clip(RoundedCornerShape(100))
+                .background(color = Color(0xffDFEFFF)),
+                contentAlignment = Alignment.Center) {
+                Image(
+                    ImageBitmap.imageResource(R.drawable.happy),
+                    contentDescription = null,
+                    modifier = Modifier.size(86.dp)
+                )
+            }
+        },
+        title = {
+            Text(
+                text = "Вы успешно оформили заказ",
+                style = checkouttype,
+                color = colorResource(R.color.text),
+                modifier = Modifier.fillMaxWidth(0.75f),
+                textAlign = TextAlign.Center,
+            )
+        },
+        confirmButton = {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                Button(
+                    onClick = {},
+                    modifier = Modifier.height(51.dp).width(234.dp).clip(RoundedCornerShape(16.dp))
+                        .background(colorResource(R.color.accent)),
+                    colors = ButtonColors(
+                        containerColor = colorResource(R.color.accent),
+                        contentColor = colorResource(R.color.block),
+                        disabledContainerColor = colorResource(R.color.accent),
+                        disabledContentColor = colorResource(R.color.block),
+                    )
+                ) {
+
+                    Text("Вернуться к покупкам", style = bottomText)
+
+                }
+            }
+        },
+
+    )
+
+}
+
+@Preview
+@Composable
+fun ChechoutTest(){
+    Checkout()
+}

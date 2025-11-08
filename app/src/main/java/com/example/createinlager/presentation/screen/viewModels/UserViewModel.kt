@@ -285,6 +285,54 @@ class UserViewModel(): ViewModel() {
 
     }
 
+    fun ViewUser(userId: String) {
+        _resultState.value = ResultState.Loading
+        viewModelScope.launch {
+            apiService.UserView(
+                    userId
+            ).enqueue(object : Callback<UserResponse> {
+                override fun onResponse(
+                    call: Call<UserResponse>,
+                    response: Response<UserResponse>
+                ) {
+                    try {
+                        response.body()?.let {
+                            val id = it.id
+                            _user.value = it
+                            _resultState.value = ResultState.Success("Success")
+                            _showSuccessDialog.value = true
+                            Log.d("ViewUser", id)
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java).message
+                                _resultState.value = ResultState.Error(message)
+
+                            } catch (ex: Exception) {
+                                Log.e(
+                                    "ViewUser",
+                                    "Failed to parse error response: ${ex.message}"
+                                )
+                                _resultState.value = ResultState.Error(ex.message.toString())
+                            }
+                        }
+                    } catch (ex: Exception) {
+                        Log.e("ViewUser", ex.message.toString())
+                        _resultState.value = ResultState.Error(ex.message.toString())
+                    }
+                }
+
+                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                    _resultState.value = ResultState.Error(t.message.toString())
+                    Log.e("ViewUser", t.message.toString())
+                }
+            })
+        }
+    }
+
+
+
     fun getId(): String = _id.value
 
 }

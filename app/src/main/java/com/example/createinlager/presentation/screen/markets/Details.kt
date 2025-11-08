@@ -94,9 +94,9 @@ fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFav
 
     if (ClassSneakers.value.isNotEmpty()) {
 
-        val listImage = ClassSneakers.value[0].image
-
         val sneakers = ConverToArrayArray(ClassSneakers)
+
+        val listImage = ClassSneakers.value[0].image
 
         Column(
             modifier = Modifier.fillMaxSize().background(colorResource(R.color.background))
@@ -184,7 +184,7 @@ fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFav
 
         }
 
-        val listFavorite = listFavorite("(iduser = '$userId')&&(idsneakers = '${sneakersId}')")
+        //val listFavorite = listFavorite("(iduser = '$userId')&&(idsneakers = '${sneakersId}')")
 
         var CurretidInCart by remember { mutableStateOf(CurretidInCarts) }
         var inCart by remember { mutableStateOf(CurretidInCart.isNotEmpty()) }
@@ -198,11 +198,13 @@ fun SneakersDetails(sneakersId:String, userId: String, token:String, CurretidFav
                     onClick = {
                         if (loved){
                             viewModel.DeleteFavorite(CurretidFavorite.value)
+                            viewModel.SneakersImport( "id = '${sneakersId}'","+created",150)
 
                             loved = false
                         }
                         else{
                             viewModel.CreateFavorite(userId,sneakersId)
+                            viewModel.SneakersImport( "id = '${sneakersId}'","+created",150)
 
                             loved = true
                         }

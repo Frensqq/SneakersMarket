@@ -54,10 +54,13 @@ import androidx.navigation.NavController
 import com.example.createinlager.R
 import com.example.createinlager.data.ConverCartToArrayArray
 import com.example.createinlager.data.ConverToArrayArray
+import com.example.createinlager.data.ConvertUserToArrayArray
 import com.example.createinlager.data.model.Sneakers
+import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.presentation.screen.AccentLongButton
 import com.example.createinlager.presentation.screen.buttonBack
 import com.example.createinlager.presentation.screen.viewModels.MarketViewModel
+import com.example.createinlager.presentation.screen.viewModels.UserViewModel
 import com.example.createinlager.presentation.screen.viewModels.viewMarketCart
 import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.TextFieldPlace
@@ -66,7 +69,7 @@ import com.example.createinlager.presentation.theme.ui.bottomText
 import kotlin.text.lines
 
 @Composable
-fun Cart(userId: String, token: String, navController: NavController, viewModel: MarketViewModel = viewModel(), viewMarketCart: viewMarketCart = viewModel()){
+fun Cart(userId: String, token: String, navController: NavController, viewModel: MarketViewModel = viewModel(), viewMarketCart: viewMarketCart = viewModel(),userViewModel: UserViewModel = viewModel() ){
 
     var isInitialized by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
@@ -194,6 +197,16 @@ fun Cart(userId: String, token: String, navController: NavController, viewModel:
 
         Box(modifier = Modifier.fillMaxWidth().height(258.dp).background(colorResource(R.color.block))){
             Column {
+
+                userViewModel.ViewUser(userId)
+
+                val userclass = userViewModel.user
+
+                val userList = emptyArray<Array<String>>()
+
+
+
+
                 StateScreen.value =
                     ButtonMenu(sneakersInCart, sneakers, StateScreen.value, "Оформить заказ")
 
