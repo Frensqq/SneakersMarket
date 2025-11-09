@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -65,7 +66,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.createinlager.data.ConverToArrayArray
+import com.example.createinlager.presentation.screen.viewModels.UserViewModel
 import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
 import com.example.createinlager.presentation.theme.ui.TypeIntCart
 import com.example.createinlager.presentation.theme.ui.bottomText
@@ -74,9 +77,11 @@ import com.example.createinlager.presentation.theme.ui.mapText
 import com.example.createinlager.presentation.theme.ui.textInFiedMarket
 
 @Composable
-fun CheckoutEmpty(){
+fun CheckoutEmpty(userList: Array<String>, userId: String, token: String, viewModel: UserViewModel = viewModel()){
 
     var stateScreenEmpty by remember { mutableStateOf(true) }
+    var email by remember { mutableStateOf(userList[3]) }
+    var phone by remember { mutableStateOf(userList[4]) }
 
     Box(modifier = Modifier.fillMaxWidth()
         .height(413.dp)
@@ -91,17 +96,29 @@ fun CheckoutEmpty(){
 
                 if (stateScreenEmpty) {
 
-                    RowCheckoutEmpty("Email", { stateScreenEmpty = !stateScreenEmpty })
+                    RowCheckoutEmpty(userList,"Email", { stateScreenEmpty = !stateScreenEmpty })
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    RowCheckoutEmpty("Телефон", { stateScreenEmpty = !stateScreenEmpty })
+                    RowCheckoutEmpty(userList,"Телефон", { stateScreenEmpty = !stateScreenEmpty })
                 }
                 else{
 
-                    RowCheckoutEmptyEdit(R.drawable.mail, { stateScreenEmpty = !stateScreenEmpty }, "Email")
+                    RowCheckoutEmptyEdit(userList, R.drawable.mail,
+                        { stateScreenEmpty = !stateScreenEmpty
+                            viewModel.UpdateUser(userId, token, email, phone, "", "")
+                        }, "Email",
+                        onTextChange = { text->
+                            email = text
+
+                        })
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    RowCheckoutEmptyEdit(R.drawable.phone, { stateScreenEmpty = !stateScreenEmpty }, "Phone")
+                    RowCheckoutEmptyEdit(userList,R.drawable.phone,
+                        { stateScreenEmpty = !stateScreenEmpty
+                            viewModel.UpdateUser(userId, token, email, phone, "", "")}, "Phone",
+                        onTextChange = { text->
+                            phone = text
+                        })
 
                 }
 
@@ -121,23 +138,36 @@ fun CheckoutEmpty(){
                             style = cartSmallTitleStyle,
                             color = colorResource(R.color.text)
                         )
-                        Text(
-                            "Тут будет адрес",
-                            style = miniTextButton,
-                            color = colorResource(R.color.hint)
-                        )
+
+                        if (stateScreenEmpty){
+                            Text(
+                                userList[5],
+                                style = miniTextButton,
+                                color = colorResource(R.color.hint)
+                            )
+                        }
+
+
                     }
 
-                    Box(
-                        modifier = Modifier.fillMaxHeight(),
-                        contentAlignment = Alignment.BottomEnd
-                    ) {
-                        Icon(
-                            bitmap = ImageBitmap.imageResource(R.drawable.edit),
-                            tint = colorResource(R.color.hint),
-                            contentDescription = null,
-                            modifier = Modifier.size(15.dp).clickable(onClick = {stateScreenEmpty = !stateScreenEmpty})
-                        )
+                    if (stateScreenEmpty) {
+                        Box(
+                            modifier = Modifier.fillMaxHeight(),
+                            contentAlignment = Alignment.BottomEnd
+                        ) {
+                            Icon(
+                                bitmap = ImageBitmap.imageResource(R.drawable.edit),
+                                tint = colorResource(R.color.hint),
+                                contentDescription = null,
+                                modifier = Modifier.size(15.dp).clickable(onClick = {
+                                    stateScreenEmpty = !stateScreenEmpty
+                                    viewModel.UpdateUser(userId, token, email, phone, "", "")
+                                })
+                            )
+                        }
+                    }
+                    else {
+                        
                     }
 
                 }
@@ -145,6 +175,8 @@ fun CheckoutEmpty(){
 
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            Text(phone + "" + email)
 
             //Map
             val context = LocalContext.current
@@ -194,17 +226,29 @@ fun CheckoutEmpty(){
 }
 
 @Composable
-fun RowCheckoutEmpty(TextType: String, onClick: () -> Unit) {
+fun RowCheckoutEmpty(userList: Array<String>, TextType: String, onClick: () -> Unit) {
 
     var textPrew = ""
     var icon = R.drawable.edit
 
+
     if (TextType == "Email") {
         icon = R.drawable.email
-        textPrew = "*******@****.***"
+        if (userList[3] == ""){
+            textPrew = "*******@****.***"
+        }
+        else {
+            textPrew = userList[3]
+
+        }
     } else {
         icon = R.drawable.phone
-        textPrew = "**_***_***_****"
+        if (userList[4] == ""){
+            textPrew = "**_***_***_****"
+        }
+        else {
+            textPrew = userList[4]
+        }
     }
 
     Row(
@@ -262,21 +306,33 @@ fun RowCheckoutEmpty(TextType: String, onClick: () -> Unit) {
             )
         }
     }
+
 }
 
 
 @Composable
-fun RowCheckoutEmptyEdit(leadIcon: Int, onClick: () -> Unit, TextType: String): String {
+fun RowCheckoutEmptyEdit(userList: Array<String>,leadIcon: Int, onClick: () -> Unit, TextType: String,  onTextChange: (String) -> Unit) {
 
     var textPrew = ""
     var icon = R.drawable.edit
 
     if (TextType == "Email") {
         icon = R.drawable.email
-        textPrew = "*******@****.***"
+        if (userList[3].isEmpty()){
+            textPrew = "*******@****.***"
+        }
+        else {
+            textPrew = userList[3]
+        }
+
     } else {
         icon = R.drawable.phone
-        textPrew = "**_***_***_****"
+        if (userList[4].isEmpty()){
+            textPrew = "**_***_***_****"
+        }
+        else {
+            textPrew = userList[4]
+        }
     }
 
     //val SneakersList = viewModel.sneakers.collectAsState()
@@ -341,7 +397,10 @@ fun RowCheckoutEmptyEdit(leadIcon: Int, onClick: () -> Unit, TextType: String): 
         }
 
     }
-    return string.value
+
+    if (string.value.isNotEmpty()) {
+        onTextChange(string.value)
+    }
 }
 
 

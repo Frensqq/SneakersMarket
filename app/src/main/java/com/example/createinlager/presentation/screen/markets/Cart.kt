@@ -55,6 +55,7 @@ import com.example.createinlager.R
 import com.example.createinlager.data.ConverCartToArrayArray
 import com.example.createinlager.data.ConverToArrayArray
 import com.example.createinlager.data.ConvertUserToArrayArray
+
 import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.presentation.screen.AccentLongButton
@@ -76,6 +77,7 @@ fun Cart(userId: String, token: String, navController: NavController, viewModel:
         if (!isInitialized) {
             viewModel.SneakersImport("id != 'null'","+created",150)
             viewMarketCart.viewCart("iduser = '$userId'",  "+created", 150)
+            userViewModel.ViewUser(userId, token)
             isInitialized = true
         }
     }
@@ -83,6 +85,11 @@ fun Cart(userId: String, token: String, navController: NavController, viewModel:
     var state = true
     var StateScreen = remember { mutableStateOf(true) }
 
+    //val userclass = userViewModel.users.collectAsState()
+    //var userclass = userViewModel.user.value
+    val userData by userViewModel.userData.collectAsState()
+
+    var userList = ConvertUserToArrayArray(userData)
 
     val SneakersInCartClass = viewMarketCart.Carts.collectAsState()
     var sneakersInCart = ConverCartToArrayArray(SneakersInCartClass)
@@ -183,9 +190,15 @@ fun Cart(userId: String, token: String, navController: NavController, viewModel:
 
         else{
 
-            Spacer(modifier = Modifier.height(46.dp))
 
-            CheckoutEmpty()
+
+
+            if (userList.isNotEmpty()){
+
+                Spacer(modifier = Modifier.height(46.dp))
+
+                CheckoutEmpty(userList, userId, token )
+            }
 
         }
 
@@ -197,15 +210,6 @@ fun Cart(userId: String, token: String, navController: NavController, viewModel:
 
         Box(modifier = Modifier.fillMaxWidth().height(258.dp).background(colorResource(R.color.block))){
             Column {
-
-                userViewModel.ViewUser(userId)
-
-                val userclass = userViewModel.user
-
-                val userList = emptyArray<Array<String>>()
-
-
-
 
                 StateScreen.value =
                     ButtonMenu(sneakersInCart, sneakers, StateScreen.value, "Оформить заказ")

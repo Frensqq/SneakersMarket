@@ -6,6 +6,7 @@ import com.example.createinlager.data.model.OtpResponse
 import com.example.createinlager.data.model.SneakersView
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.model.FavoriteResponse
+import com.example.createinlager.data.model.UserUpdate
 import com.example.createinlager.domain.model.CartRequest
 import com.example.createinlager.domain.model.ChangePassRequest
 import com.example.createinlager.domain.model.OtpAuth
@@ -34,12 +35,12 @@ interface PocketBaseApi {
     //Просмотр пользоавтеля
 
     @GET("/api/collections/users/records/{userId}")
-    fun UserView(@Path("userId") userId: String): Call<UserResponse>
+    fun UserView(@Path("userId") userId: String,  @Header("Authorization") token: String ): Call<UserResponse>
 
     //Обновление пользователя
 
     @PATCH("/api/collections/users/records/{userId}")
-    fun UserUpdate(@Body request: UserRequest, @Path("userId") userId: String): Call<UserResponse>
+    fun UserUpdate(@Body request: UserUpdate, @Header("Authorization") token: String, @Path("userId") userId: String): Call<UserResponse>
 
     ///Авторизация
 

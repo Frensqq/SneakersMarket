@@ -37,28 +37,52 @@ fun ConverToArrayArray(sneakers:  State<List<Sneakers>>): Array<Array<String>>{
 }
 
 @Composable
-fun ConvertUserToArrayArray(users:  State<List<UserResponse>>): Array<Array<String>>{
-
-    val twoDArray = remember(users.value) {
-        users.value.map { user ->
+fun ConvertUserToArrayArray(userData:  UserResponse?): Array<String> {
+    val userList = remember(userData) {
+        if (userData != null) {
             arrayOf(
-                user.collectionId, // [0]
-                user.collectionName,
-                user.id,
-                user.name,
-                user.email,
-                user.address,
-                user.avatar,
-                user.card,
-                user.phoneNumber,
-                user.surname,
-                user.created,
-                user.updated
+                userData!!.id,
+                userData!!.name,
+                userData!!.surname,
+                userData!!.email,
+                userData!!.phoneNumber,
+                userData!!.address,
+                userData!!.card,
+                userData!!.avatar,
+                userData!!.collectionId,
+                userData!!.collectionName
             )
-        }.toTypedArray()
+        } else {
+            emptyArray()
+        }
     }
-    return twoDArray
+    return userList
 }
+
+
+//@Composable
+//fun ConvertUserToArrayArray(users:  UserResponse): Array<Array<String>>{
+//
+//    val twoDArray = remember(users) {
+//        users { user ->
+//            arrayOf(
+//                user.collectionId, // [0]
+//                user.collectionName,
+//                user.id,
+//                user.name,
+//                user.email,
+//                user.address,
+//                user.avatar,
+//                user.card,
+//                user.phoneNumber,
+//                user.surname,
+//                user.created,
+//                user.updated
+//            )
+//        }.toTypedArray()
+//    }
+//    return twoDArray
+//}
 
 @Composable
 fun ConverToFavoriteArrayArray(favorits:  State<List<FavoriteResponse>>): Array<Array<String>>{

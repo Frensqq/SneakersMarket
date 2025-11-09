@@ -2,13 +2,17 @@ package com.example.createinlager.presentation.screen.viewModels
 
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.Updater
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.createinlager.data.model.AuthResponse
 import com.example.createinlager.data.model.ErrorResponce
 import com.example.createinlager.data.model.OtpResponse
+import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.data.model.UserResponse
+import com.example.createinlager.data.model.UserUpdate
 import com.example.createinlager.data.remote.PocketBaseApiService
 import com.example.createinlager.domain.model.ChangePassRequest
 import com.example.createinlager.domain.model.OtpAuth
@@ -30,6 +34,12 @@ class UserViewModel(): ViewModel() {
     private val apiService = PocketBaseApiService.instance
     private val _user = mutableStateOf<UserResponse?>(null)
     val user: State<UserResponse?> get() = _user
+
+    private val _users = MutableStateFlow<List<String>>(emptyList())
+    val users: StateFlow<List<String>> get() = _users.asStateFlow()
+
+    private val _userData = MutableStateFlow<UserResponse?>(null)
+    val userData: StateFlow<UserResponse?> = _userData.asStateFlow()
 
     private val _id = mutableStateOf("")
     private val _otpCode = mutableStateOf<String>("")
@@ -285,23 +295,23 @@ class UserViewModel(): ViewModel() {
 
     }
 
-    fun ViewUser(userId: String) {
+    fun ViewUser(userId: String, token: String) {
         _resultState.value = ResultState.Loading
         viewModelScope.launch {
             apiService.UserView(
-                    userId
+                userId = userId,
+                token
             ).enqueue(object : Callback<UserResponse> {
                 override fun onResponse(
                     call: Call<UserResponse>,
                     response: Response<UserResponse>
                 ) {
                     try {
-                        response.body()?.let {
-                            val id = it.id
-                            _user.value = it
+                        response.body()?.let {userData ->
+                            _userData.value = userData
                             _resultState.value = ResultState.Success("Success")
                             _showSuccessDialog.value = true
-                            Log.d("ViewUser", id)
+                            Log.d("ViewUser", userData.id)
                         }
                         response.errorBody()?.let {
                             try {
@@ -322,7 +332,6 @@ class UserViewModel(): ViewModel() {
                         _resultState.value = ResultState.Error(ex.message.toString())
                     }
                 }
-
                 override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                     _resultState.value = ResultState.Error(t.message.toString())
                     Log.e("ViewUser", t.message.toString())
@@ -331,6 +340,56 @@ class UserViewModel(): ViewModel() {
         }
     }
 
+    fun UpdateUser(userId: String,token: String, email: String, phone: String, card: String, address: String) {
+        _resultState.value = ResultState.Loading
+        viewModelScope.launch {
+            apiService.UserUpdate(
+                userId = userId,
+                token = token,
+                request = UserUpdate(
+                    email,
+                    phone,
+                    address,
+                    card
+                )
+            ).enqueue(object : Callback<UserResponse> {
+                override fun onResponse(
+                    call: Call<UserResponse>,
+                    response: Response<UserResponse>
+                ) {
+                    try {
+                        response.body()?.let {userData ->
+                            _userData.value = userData
+                            _resultState.value = ResultState.Success("Success")
+                            _showSuccessDialog.value = true
+                            Log.d("UpdateUser", userData.id)
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java).message
+                                _resultState.value = ResultState.Error(message)
+
+                            } catch (ex: Exception) {
+                                Log.e(
+                                    "UpdateUser",
+                                    "Failed to parse error response: ${ex.message}"
+                                )
+                                _resultState.value = ResultState.Error(ex.message.toString())
+                            }
+                        }
+                    } catch (ex: Exception) {
+                        Log.e("UpdateUser", ex.message.toString())
+                        _resultState.value = ResultState.Error(ex.message.toString())
+                    }
+                }
+                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                    _resultState.value = ResultState.Error(t.message.toString())
+                    Log.e("UpdateUser", t.message.toString())
+                }
+            })
+        }
+    }
 
 
     fun getId(): String = _id.value
