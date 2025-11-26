@@ -19,6 +19,7 @@ import com.example.createinlager.R
 import com.example.createinlager.data.model.ErrorResponce
 import com.example.createinlager.data.remote.PocketBaseApiService
 import com.example.createinlager.domain.model.CartRequest
+import com.example.createinlager.domain.model.OrderRequest
 import com.example.createinlager.domain.state.ResultState
 import com.example.createinlager.presentation.theme.ui.bottomText
 import com.example.professionals.data.model.market.InCart

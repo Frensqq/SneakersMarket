@@ -6,11 +6,15 @@ import com.example.createinlager.data.model.OtpResponse
 import com.example.createinlager.data.model.SneakersView
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.model.FavoriteResponse
+import com.example.createinlager.data.model.OrderResponse
+import com.example.createinlager.data.model.PozitionResponse
 import com.example.createinlager.data.model.UserUpdate
 import com.example.createinlager.domain.model.CartRequest
 import com.example.createinlager.domain.model.ChangePassRequest
+import com.example.createinlager.domain.model.OrderRequest
 import com.example.createinlager.domain.model.OtpAuth
 import com.example.createinlager.domain.model.OtpRequest
+import com.example.createinlager.domain.model.PozitionRequest
 import com.example.createinlager.domain.model.UserAuth
 import com.example.createinlager.domain.model.UserRequest
 import com.example.createinlager.domain.model.favoriteRequest
@@ -92,6 +96,16 @@ interface PocketBaseApi {
 
     @PATCH("/api/collections/Cart/records/{id}")
     fun updateCart(@Path("id") id: String,@Body request: CartRequest ): Call<ListInCart>
+
+    //заказ
+
+    @POST("/api/collections/Orders/records")
+    fun createOrder(@Body request: OrderRequest): Call<OrderResponse>
+
+    @POST("/api/collections/pozition/records")
+    fun createPozition(@Body request: PozitionRequest): Call<PozitionResponse>
+
+
 
 
 }

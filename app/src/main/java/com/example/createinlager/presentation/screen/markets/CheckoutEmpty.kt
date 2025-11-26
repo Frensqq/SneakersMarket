@@ -7,14 +7,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,12 +22,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,39 +33,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.createinlager.R
-import com.example.createinlager.presentation.MainActivity
 import com.example.createinlager.presentation.theme.ui.cartSmallTitleStyle
 import com.example.createinlager.presentation.theme.ui.cartSmallTitleStyleTwo
 import com.example.createinlager.presentation.theme.ui.miniTextButton
-import com.example.createinlager.presentation.theme.ui.nameTextField
-import com.google.android.play.integrity.internal.b
-import com.google.android.play.integrity.internal.m
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.sync.Mutex
 import kotlin.jvm.java
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.createinlager.data.ConverToArrayArray
 import com.example.createinlager.presentation.screen.viewModels.UserViewModel
-import com.example.createinlager.presentation.theme.ui.TextOnBoardTypeSmall
 import com.example.createinlager.presentation.theme.ui.TypeIntCart
 import com.example.createinlager.presentation.theme.ui.bottomText
 import com.example.createinlager.presentation.theme.ui.checkouttype
@@ -82,9 +64,10 @@ fun CheckoutEmpty(userList: Array<String>, userId: String, token: String, viewMo
     var stateScreenEmpty by remember { mutableStateOf(true) }
     var email by remember { mutableStateOf(userList[3]) }
     var phone by remember { mutableStateOf(userList[4]) }
+    var address by remember { mutableStateOf(userList[5]) }
 
     Box(modifier = Modifier.fillMaxWidth()
-        .height(413.dp)
+        .height(if(stateScreenEmpty) 413.dp else 480.dp)
         .clip(RoundedCornerShape(16.dp))
         .background(colorResource(R.color.block)
     )) {
@@ -105,17 +88,16 @@ fun CheckoutEmpty(userList: Array<String>, userId: String, token: String, viewMo
 
                     RowCheckoutEmptyEdit(userList, R.drawable.mail,
                         { stateScreenEmpty = !stateScreenEmpty
-                            viewModel.UpdateUser(userId, token, email, phone, "", "")
+                            viewModel.UpdateUser(userId, token, email, phone, "", address)
                         }, "Email",
                         onTextChange = { text->
                             email = text
-
                         })
 
                     Spacer(modifier = Modifier.height(16.dp))
                     RowCheckoutEmptyEdit(userList,R.drawable.phone,
                         { stateScreenEmpty = !stateScreenEmpty
-                            viewModel.UpdateUser(userId, token, email, phone, "", "")}, "Phone",
+                            viewModel.UpdateUser(userId, token, email, phone, "", address)}, "Phone",
                         onTextChange = { text->
                             phone = text
                         })
@@ -125,59 +107,58 @@ fun CheckoutEmpty(userList: Array<String>, userId: String, token: String, viewMo
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().height(44.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
                     Column(
-                        modifier = Modifier.fillMaxHeight(),
-                        verticalArrangement = Arrangement.SpaceBetween
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.Center
                     ) {
                         Text(
                             "Адрес",
                             style = cartSmallTitleStyle,
                             color = colorResource(R.color.text)
                         )
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                        if (stateScreenEmpty){
+                        Row(modifier = Modifier.height(if (stateScreenEmpty) 20.dp else 52.dp).fillMaxWidth()) {
+                            if (stateScreenEmpty){
                             Text(
-                                userList[5],
+                                address,
                                 style = miniTextButton,
                                 color = colorResource(R.color.hint)
                             )
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.BottomEnd
+                            ) {
+                                Icon(
+                                    bitmap = ImageBitmap.imageResource(R.drawable.edit),
+                                    tint = colorResource(R.color.hint),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(15.dp).clickable(onClick = {
+                                        stateScreenEmpty = !stateScreenEmpty
+                                        viewModel.UpdateUser(userId, token, email, phone, "", address)
+                                    })
+                                )
+                            }
+
+
+                            }
+                            else{
+                                RowCheckoutEmptyEdit(userList,R.drawable.home,
+                                    { stateScreenEmpty = !stateScreenEmpty
+                                        viewModel.UpdateUser(userId, token, email, phone, "", address)}, "",
+                                    onTextChange = { text->
+                                        address = text
+                                    })
+                            }
                         }
-
-
                     }
-
-                    if (stateScreenEmpty) {
-                        Box(
-                            modifier = Modifier.fillMaxHeight(),
-                            contentAlignment = Alignment.BottomEnd
-                        ) {
-                            Icon(
-                                bitmap = ImageBitmap.imageResource(R.drawable.edit),
-                                tint = colorResource(R.color.hint),
-                                contentDescription = null,
-                                modifier = Modifier.size(15.dp).clickable(onClick = {
-                                    stateScreenEmpty = !stateScreenEmpty
-                                    viewModel.UpdateUser(userId, token, email, phone, "", "")
-                                })
-                            )
-                        }
-                    }
-                    else {
-                        
-                    }
-
                 }
-
-
-
             Spacer(modifier = Modifier.height(16.dp))
-
-            Text(phone + "" + email)
-
+            //Text(phone + "" + email)
             //Map
             val context = LocalContext.current
 
@@ -215,14 +196,8 @@ fun CheckoutEmpty(userList: Array<String>, userId: String, token: String, viewMo
 
             RowCheckoutEmptyCard("Добавить")
 
-
         }
-
-
     }
-
-
-
 }
 
 @Composable
@@ -306,9 +281,7 @@ fun RowCheckoutEmpty(userList: Array<String>, TextType: String, onClick: () -> U
             )
         }
     }
-
 }
-
 
 @Composable
 fun RowCheckoutEmptyEdit(userList: Array<String>,leadIcon: Int, onClick: () -> Unit, TextType: String,  onTextChange: (String) -> Unit) {
@@ -325,7 +298,7 @@ fun RowCheckoutEmptyEdit(userList: Array<String>,leadIcon: Int, onClick: () -> U
             textPrew = userList[3]
         }
 
-    } else {
+    } else if(TextType == "Phone"){
         icon = R.drawable.phone
         if (userList[4].isEmpty()){
             textPrew = "**_***_***_****"
@@ -334,12 +307,10 @@ fun RowCheckoutEmptyEdit(userList: Array<String>,leadIcon: Int, onClick: () -> U
             textPrew = userList[4]
         }
     }
+    else{
+        textPrew = ""
+    }
 
-    //val SneakersList = viewModel.sneakers.collectAsState()
-//    var sneakers: Array<Array<String>> = emptyArray()
-//    if (SneakersList.value.isNotEmpty()) {
-//        sneakers = ConverToArrayArray(SneakersList)
-//    }
 
     val string = remember { mutableStateOf("") }
 
@@ -403,8 +374,6 @@ fun RowCheckoutEmptyEdit(userList: Array<String>,leadIcon: Int, onClick: () -> U
     }
 }
 
-
-
 @Composable
 fun RowCheckoutEmptyCard(TextType: String){
 
@@ -436,59 +405,10 @@ fun RowCheckoutEmptyCard(TextType: String){
     }
 }
 
-@Composable
-fun Checkout(){
 
-    AlertDialog(
-        onDismissRequest = { true },
-        containerColor = Color.White,
-        modifier = Modifier.fillMaxWidth().height(375.dp),
-        icon = {
-            Box(modifier = Modifier.padding(top=20.dp).size(134.dp).clip(RoundedCornerShape(100))
-                .background(color = Color(0xffDFEFFF)),
-                contentAlignment = Alignment.Center) {
-                Image(
-                    ImageBitmap.imageResource(R.drawable.happy),
-                    contentDescription = null,
-                    modifier = Modifier.size(86.dp)
-                )
-            }
-        },
-        title = {
-            Text(
-                text = "Вы успешно оформили заказ",
-                style = checkouttype,
-                color = colorResource(R.color.text),
-                modifier = Modifier.fillMaxWidth(0.75f),
-                textAlign = TextAlign.Center,
-            )
-        },
-        confirmButton = {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                Button(
-                    onClick = {},
-                    modifier = Modifier.height(51.dp).width(234.dp).clip(RoundedCornerShape(16.dp))
-                        .background(colorResource(R.color.accent)),
-                    colors = ButtonColors(
-                        containerColor = colorResource(R.color.accent),
-                        contentColor = colorResource(R.color.block),
-                        disabledContainerColor = colorResource(R.color.accent),
-                        disabledContentColor = colorResource(R.color.block),
-                    )
-                ) {
-
-                    Text("Вернуться к покупкам", style = bottomText)
-
-                }
-            }
-        },
-
-    )
-
-}
 
 @Preview
 @Composable
 fun ChechoutTest(){
-    Checkout()
+
 }
