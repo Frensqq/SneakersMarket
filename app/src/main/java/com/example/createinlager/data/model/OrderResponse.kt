@@ -3,7 +3,7 @@ package com.example.createinlager.data.model
 data class OrderResponse(
 
     val id: String,
-    val id_user: String,
+    val idusers: String,
     val id_snakers_title: String,
     val email: String,
     val phone: String,

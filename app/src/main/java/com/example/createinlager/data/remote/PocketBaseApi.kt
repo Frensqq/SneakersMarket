@@ -6,6 +6,7 @@ import com.example.createinlager.data.model.OtpResponse
 import com.example.createinlager.data.model.SneakersView
 import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.model.FavoriteResponse
+import com.example.createinlager.data.model.ListOrderResponse
 import com.example.createinlager.data.model.OrderResponse
 import com.example.createinlager.data.model.PozitionResponse
 import com.example.createinlager.data.model.UserUpdate
@@ -101,6 +102,9 @@ interface PocketBaseApi {
 
     @POST("/api/collections/Orders/records")
     fun createOrder(@Body request: OrderRequest): Call<OrderResponse>
+
+    @GET("/api/collections/Orders/records")
+    fun viewOrder(@Query("filter") filter: String): Call<ListOrderResponse>
 
     @POST("/api/collections/pozition/records")
     fun createPozition(@Body request: PozitionRequest): Call<PozitionResponse>

@@ -1,7 +1,7 @@
 package com.example.createinlager.domain.model
 
 data class OrderRequest(
-    val id_users: String,
+    val idusers: String,
     val id_snakers_title: String,
     val email: String,
     val phone: String,

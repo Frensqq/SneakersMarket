@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import com.example.createinlager.data.model.FavoriteList
 import com.example.createinlager.data.model.FavoriteResponse
+import com.example.createinlager.data.model.OrderResponse
 import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.data.model.UserResponse
 import com.example.professionals.data.model.market.InCart
@@ -30,6 +31,30 @@ fun ConverToArrayArray(sneakers:  State<List<Sneakers>>): Array<Array<String>>{
                 sneaker.watch,
                 sneaker.created,
                 sneaker.updated
+            )
+        }.toTypedArray()
+    }
+    return twoDArray
+}
+
+
+@Composable
+fun ConverToArrayArrayOrderList(orders: State<List<OrderResponse>>): Array<Array<String>> {
+    val twoDArray = remember(orders.value) {
+        val safeOrders = orders.value ?: emptyList()
+
+        safeOrders.map { order ->
+            arrayOf(
+                order.id ?: "",                    // [0]
+                order.idusers ?: "",              // [1]
+                order.id_snakers_title ?: "",     // [2]
+                order.costOrder ?: "",            // [3]
+                order.cost ?: "",                 // [4]
+                order.email ?: "",                // [5]
+                order.phone ?: "",                // [6]
+                order.address ?: "",              // [7]
+                order.card ?: "",                 // [8]
+                order.created ?: "",              // [9]
             )
         }.toTypedArray()
     }

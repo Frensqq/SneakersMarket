@@ -89,8 +89,6 @@ fun SideMenu(userId: String, token: String, navController: NavController, viewMo
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
-
-
                     )
                 }
 
@@ -115,7 +113,7 @@ fun SideMenu(userId: String, token: String, navController: NavController, viewMo
                     navController)
                 Spacer(modifier = Modifier.height(31.dp))
 
-                ProfileRow(R.drawable.delivery, "Заказы", "", navController)
+                ProfileRow(R.drawable.delivery, "Заказы", "Orders/${userId}/${token}", navController)
                 Spacer(modifier = Modifier.height(28.dp))
 
                 ProfileRow(R.drawable.notification, "Уведомления", "", navController)

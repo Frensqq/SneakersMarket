@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.presentation.screen.OnBoards.OnBoards
 import com.example.createinlager.presentation.screen.Profile.BarcodeFullScreen
+import com.example.createinlager.presentation.screen.Profile.Orders
 import com.example.createinlager.presentation.screen.Profile.Profile
 import com.example.createinlager.presentation.screen.Profile.SideMenu
 import com.example.createinlager.presentation.screen.authentication.CreateNewPassword
@@ -90,6 +91,11 @@ fun Navigate() {
             val userId = backStackEntry.arguments?.getString("userIdToBarcodeFullScreen")?: ""
             val token =  backStackEntry.arguments?.getString("tokenToBarcodeFullScreen")?: ""
             BarcodeFullScreen(userId,token,navController)
+        }
+        composable("Orders/{userIdToOrders}/{tokenToOrders}") {backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userIdToOrders")?: ""
+            val token =  backStackEntry.arguments?.getString("tokenToOrders")?: ""
+            Orders(userId,token,navController)
         }
 
     }

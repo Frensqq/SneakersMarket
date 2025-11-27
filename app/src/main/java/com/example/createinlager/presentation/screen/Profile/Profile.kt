@@ -55,7 +55,6 @@ import com.example.createinlager.presentation.theme.ui.ButtonText
 import com.example.createinlager.presentation.theme.ui.CategoryName
 import com.example.createinlager.presentation.theme.ui.ProfileName
 import com.example.createinlager.presentation.theme.ui.TitleCategoryType
-import com.google.android.play.integrity.internal.n
 import com.simonsickle.compose.barcodes.Barcode
 import com.simonsickle.compose.barcodes.BarcodeType
 
