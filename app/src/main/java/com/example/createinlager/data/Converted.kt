@@ -10,6 +10,8 @@ import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.data.model.UserResponse
 import com.example.professionals.data.model.market.InCart
 import com.example.professionals.data.model.market.ListInCart
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.collections.map
 
 @Composable
@@ -157,5 +159,36 @@ fun ListFavoriteSneakersCreate(ListSneakers: Array<Array<String>>, listFavorite:
     }
     return ListFavoriteSneakers.toTypedArray()
 
+}
+
+fun CurrentDateTime(): Array<Int>{
+    val currentDateTime = LocalDateTime.now()
+    val ArrayData: Array<Int> = arrayOf(
+        currentDateTime.year,
+        currentDateTime.monthValue,
+        currentDateTime.dayOfMonth,
+        currentDateTime.hour,
+        currentDateTime.minute,
+        currentDateTime.second
+    )
+    return ArrayData
+}
+
+fun parsingByTime(BuyTime: String): Array<Int>{
+    val dateString = BuyTime
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS'Z'")
+    val dateTime = LocalDateTime.parse(dateString, formatter)
+
+    val ArrayData: Array<Int> = arrayOf(
+        dateTime.year,
+        dateTime.monthValue,
+        dateTime.dayOfMonth,
+        dateTime.hour,
+        dateTime.minute,
+        dateTime.second
+    )
+
+    return ArrayData
 }
 

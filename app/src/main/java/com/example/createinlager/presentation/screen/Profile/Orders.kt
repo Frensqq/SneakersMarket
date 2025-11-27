@@ -40,12 +40,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.createinlager.R
 import com.example.createinlager.data.ConverToArrayArrayOrderList
+import com.example.createinlager.data.CurrentDateTime
+import com.example.createinlager.data.parsingByTime
 import com.example.createinlager.presentation.screen.buttonBack
 import com.example.createinlager.presentation.screen.viewModels.ViewOrders
 import com.example.createinlager.presentation.theme.ui.ButtonText
+import com.example.createinlager.presentation.theme.ui.CategoryName
 import com.example.createinlager.presentation.theme.ui.TitleCategoryType
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun Orders(userId: String, token: String, navController: NavController, viewModel: ViewOrders = viewModel()){
@@ -101,8 +102,10 @@ fun Orders(userId: String, token: String, navController: NavController, viewMode
                             TextData = "Вчера"
                         }
                         if (TextData != LastData) {
-                            Text(TextData)
+                            Text(TextData, style = CategoryName, color = colorResource(R.color.text))
                         }
+
+
 
                         LastData = TextData
 
@@ -128,12 +131,7 @@ fun Orders(userId: String, token: String, navController: NavController, viewMode
                 }
             }
         }
-
-
-
-
     }
-
 }
 
 @Composable
@@ -142,7 +140,7 @@ fun OrdersCard(number: String, name:String, cost: String, costOrder: String, tim
     Box(modifier = Modifier.fillMaxWidth()
         .height(105.dp)
         .clip(RoundedCornerShape(8.dp))
-        .background(colorResource(R.color.block))){
+        .background(colorResource(R.color.block)).clickable(onClick = {})){
 
         Row(modifier = Modifier.padding(10.dp) ){
 
@@ -184,37 +182,6 @@ fun PreviewOrdersCard() {
     OrdersCard("3463456345","Nike aIR fORCE",  "260","364.96", "10:30")
 }
 
-
-fun CurrentDateTime(): Array<Int>{
-    val currentDateTime = LocalDateTime.now()
-    val ArrayData: Array<Int> = arrayOf(
-        currentDateTime.year,
-        currentDateTime.monthValue,
-        currentDateTime.dayOfMonth,
-        currentDateTime.hour,
-        currentDateTime.minute,
-        currentDateTime.second
-    )
-    return ArrayData
-}
-
-fun parsingByTime(BuyTime: String): Array<Int>{
-    val dateString = BuyTime
-
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS'Z'")
-    val dateTime = LocalDateTime.parse(dateString, formatter)
-
-    val ArrayData: Array<Int> = arrayOf(
-        dateTime.year,
-        dateTime.monthValue,
-        dateTime.dayOfMonth,
-        dateTime.hour,
-        dateTime.minute,
-        dateTime.second
-    )
-
-    return ArrayData
-}
 
 @Composable
 fun OrdersTitleLine(navController: NavController, Road: String){
