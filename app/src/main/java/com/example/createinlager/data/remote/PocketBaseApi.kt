@@ -110,6 +110,8 @@ interface PocketBaseApi {
     fun createPozition(@Body request: PozitionRequest): Call<PozitionResponse>
 
 
-
+    //акция
+    @GET("/api/collections/Promo/records")
+    fun viewPromo(): Call<ListOrderResponse>
 
 }
