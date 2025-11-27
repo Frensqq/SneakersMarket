@@ -237,7 +237,7 @@ fun Profile(userId: String, token: String, navController: NavController, viewMod
             }
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
 
-                navigationBar(userId, token, navController)
+                navigationBar(userId, token, 3,navController)
             }
         }
     }

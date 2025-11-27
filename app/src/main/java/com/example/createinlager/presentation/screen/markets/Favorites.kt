@@ -97,7 +97,7 @@ fun Favorites(userId: String,token:String,navController: NavController, viewMode
 
     }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        navigationBar(userId, token, navController)
+        navigationBar(userId, token, 1,navController)
     }
 
 
