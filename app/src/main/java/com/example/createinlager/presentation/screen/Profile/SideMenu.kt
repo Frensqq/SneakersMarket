@@ -104,18 +104,15 @@ fun SideMenu(userId: String, token: String, navController: NavController, viewMo
                 )
                 Spacer(modifier = Modifier.height(57.dp))
 
-                ProfileRow(R.drawable.people, "Профиль", "", navController)
+                ProfileRow(R.drawable.people, "Профиль", "ProfileScreen/${userId}/${token}",
+                    navController)
                 Spacer(modifier = Modifier.height(30.dp))
 
                 ProfileRow(R.drawable.bag, "Корзина", "Cart/${userId}/${token}", navController)
                 Spacer(modifier = Modifier.height(30.dp))
 
-                ProfileRow(
-                    R.drawable.empty_heart,
-                    "Избранное",
-                    "Favorite/${userId}/${token}",
-                    navController
-                )
+                ProfileRow(R.drawable.empty_heart, "Избранное", "Favorite/${userId}/${token}",
+                    navController)
                 Spacer(modifier = Modifier.height(31.dp))
 
                 ProfileRow(R.drawable.delivery, "Заказы", "", navController)

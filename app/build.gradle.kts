@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     testImplementation(libs.junit)
+    implementation(libs.volley)
     implementation(libs.androidx.navigation.compose)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,20 +72,21 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0") // Подключаем саму библиотеку Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // Подключаем конвертер для работы с JSON
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.navigation:navigation-compose")
     implementation(libs.play.services.maps)
+    implementation(libs.composed.barcodes)
+
+
+
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-
     implementation (libs.maps.mobile)
     implementation("ru.sulgik.mapkit:yandex-mapkit-kmp-compose:0.1.1")
-
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("com.google.accompanist:accompanist-permissions:0.31.2-alpha")
-
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
 }

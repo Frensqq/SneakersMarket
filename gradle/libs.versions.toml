@@ -11,6 +11,8 @@ navigationCompose = "2.9.0"
 lifecycleViewmodelCompose = "2.8.7"
 mapsMobile = "4.10.1-lite"
 playServicesMaps = "19.0.0"
+volley = "1.2.1"
+composedBarcodes = "1.3.0"
 
 
 composeBom = "2024.09.00"
@@ -34,6 +36,8 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 maps-mobile = { module = "com.yandex.android:maps.mobile", version.ref = "mapsMobile" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
+composed-barcodes = { module = "com.simonsickle:composed-barcodes", version.ref = "composedBarcodes" }
 
 
 [plugins]

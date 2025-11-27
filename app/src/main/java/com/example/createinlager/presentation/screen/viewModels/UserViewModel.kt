@@ -347,13 +347,15 @@ class UserViewModel(): ViewModel() {
         }
     }
 
-    fun UpdateUser(userId: String,token: String, email: String, phone: String, card: String, address: String) {
+    fun UpdateUser(userId: String, token: String, email: String, phone: String, card: String, address: String, name: String, surname: String) {
         _resultState.value = ResultState.Loading
         viewModelScope.launch {
             apiService.UserUpdate(
                 userId = userId,
                 token = token,
                 request = UserUpdate(
+                    name,
+                    surname,
                     email,
                     phone,
                     address,
