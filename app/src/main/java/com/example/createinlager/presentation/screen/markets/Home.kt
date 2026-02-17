@@ -78,7 +78,7 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {navController.navigate("Profile/${userId}/${token}")}) {
                         Box(modifier = Modifier.height(18.dp).width(26.dp)) {
                             Image(
                                 bitmap = ImageBitmap.imageResource(R.drawable.burger),
@@ -177,31 +177,11 @@ fun Home(userId: String, token:String, navController: NavController, viewModel: 
                 }
 
                 Spacer(modifier = Modifier.height(19.dp))
-
-
-
-
-
             }
-
-
-
         }
-
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
 
-            navigationBar(userId, token, navController)
+            navigationBar(userId, token, 0,navController)
         }
     }
-
-
-
 }
-
-
-
-
-
-
-
-

@@ -88,7 +88,7 @@ fun CheckoutEmpty(userList: Array<String>, userId: String, token: String, viewMo
 
                     RowCheckoutEmptyEdit(userList, R.drawable.mail,
                         { stateScreenEmpty = !stateScreenEmpty
-                            viewModel.UpdateUser(userId, token, email, phone, "", address)
+                            viewModel.UpdateUser(userId, token, email, phone, userList[6], address, userList[1], userList[2])
                         }, "Email",
                         onTextChange = { text->
                             email = text
@@ -97,7 +97,7 @@ fun CheckoutEmpty(userList: Array<String>, userId: String, token: String, viewMo
                     Spacer(modifier = Modifier.height(16.dp))
                     RowCheckoutEmptyEdit(userList,R.drawable.phone,
                         { stateScreenEmpty = !stateScreenEmpty
-                            viewModel.UpdateUser(userId, token, email, phone, "", address)}, "Phone",
+                            viewModel.UpdateUser(userId, token, email, phone, userList[6], address, userList[1], userList[2])}, "Phone",
                         onTextChange = { text->
                             phone = text
                         })
@@ -139,7 +139,7 @@ fun CheckoutEmpty(userList: Array<String>, userId: String, token: String, viewMo
                                     contentDescription = null,
                                     modifier = Modifier.size(15.dp).clickable(onClick = {
                                         stateScreenEmpty = !stateScreenEmpty
-                                        viewModel.UpdateUser(userId, token, email, phone, "", address)
+                                        viewModel.UpdateUser(userId, token, email, phone, userList[6], address, userList[1], userList[2])
                                     })
                                 )
                             }
@@ -149,7 +149,7 @@ fun CheckoutEmpty(userList: Array<String>, userId: String, token: String, viewMo
                             else{
                                 RowCheckoutEmptyEdit(userList,R.drawable.home,
                                     { stateScreenEmpty = !stateScreenEmpty
-                                        viewModel.UpdateUser(userId, token, email, phone, "", address)}, "",
+                                        viewModel.UpdateUser(userId, token, email, phone, userList[6], address, userList[1], userList[2])}, "",
                                     onTextChange = { text->
                                         address = text
                                     })

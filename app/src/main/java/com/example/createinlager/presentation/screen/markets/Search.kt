@@ -63,22 +63,18 @@ fun Search(userId: String, token: String, navController: NavController, viewMode
 
             sneakers = MarketTextField("Поиск", 1f, true)
 
-
-
-            Spacer(modifier = Modifier.height(31.dp))
-
-
-
-            Row {
-
-                Icon(
-                    bitmap = ImageBitmap.imageResource(R.drawable.clock),
-                    contentDescription = null,
-                    modifier = Modifier.size(22.dp)
-                )
-                Text("не работает ._.", style = ButtonText, color = colorResource(R.color.text))
-
-            }
+//            Spacer(modifier = Modifier.height(31.dp))
+//
+//            Row {
+//
+//                Icon(
+//                    bitmap = ImageBitmap.imageResource(R.drawable.clock),
+//                    contentDescription = null,
+//                    modifier = Modifier.size(22.dp)
+//                )
+//                Text("", style = ButtonText, color = colorResource(R.color.text))
+//
+//            }
         }
 
         Spacer(modifier = Modifier.height(23.dp))
@@ -88,13 +84,6 @@ fun Search(userId: String, token: String, navController: NavController, viewMode
             columnProducts(sneakers, userId, token, navController)
         }
 
-
-
-
-
-
     }
-
-
 
 }

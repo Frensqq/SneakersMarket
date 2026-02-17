@@ -4,6 +4,8 @@ import com.example.professionals.data.model.market.InCart
 
 data class UserUpdate(
 
+    val name: String,
+    val surname: String,
     val email: String,
     val phoneNumber: String,
     val address: String,

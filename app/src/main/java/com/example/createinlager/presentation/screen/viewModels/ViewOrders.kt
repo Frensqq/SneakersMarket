@@ -6,13 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.createinlager.data.model.ErrorResponce
+import com.example.createinlager.data.model.FavoriteList
+import com.example.createinlager.data.model.FavoriteResponse
+import com.example.createinlager.data.model.ListOrderResponse
 import com.example.createinlager.data.model.OrderResponse
 import com.example.createinlager.data.model.PozitionResponse
 import com.example.createinlager.data.model.Sneakers
+import com.example.createinlager.data.model.UserResponse
 import com.example.createinlager.data.remote.PocketBaseApiService
 import com.example.createinlager.domain.model.OrderRequest
 import com.example.createinlager.domain.model.PozitionRequest
 import com.example.createinlager.domain.state.ResultState
+import com.example.professionals.data.model.market.InCart
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,6 +37,10 @@ class ViewOrders: ViewModel() {
 
     private val apiService = PocketBaseApiService.instance
 
+
+   private val _orders= MutableStateFlow<List<OrderResponse>>(emptyList())
+   val orders: StateFlow<List<OrderResponse>> = _orders.asStateFlow()
+
     private val _id = mutableStateOf("")
     val id: State<String> = _id
 
@@ -40,7 +49,7 @@ class ViewOrders: ViewModel() {
         viewModelScope.launch {
             apiService.createOrder(
                 OrderRequest(
-                    id_users = UserId,
+                    idusers = UserId,
                     idsneakers,
                     userList[3],
                     userList[4],
@@ -57,7 +66,6 @@ class ViewOrders: ViewModel() {
                         response: Response<OrderResponse>,
                     ) {
                         try {
-                            // Если запрос успешен, сохраняем список книг и обновляем состояние
                             response.body()?.let {
                                 val id = it.id
                                 _id.value = it.id
@@ -84,11 +92,54 @@ class ViewOrders: ViewModel() {
                     }
 
                     override fun onFailure(call: Call<OrderResponse>, t: Throwable) {
-                        // Обработка ошибки при выполнении запроса
                         _resultState.value = ResultState.Error(t.message.toString())
                         Log.e("createOrder", t.message.toString())
                     }
                 })
+        }
+    }
+
+
+    fun ViewFavorite(filter: String){
+        _resultState.value = ResultState.Loading
+        viewModelScope.launch {
+            apiService.viewOrder(
+                filter,
+            ).enqueue(object : Callback<ListOrderResponse> {
+                override fun onResponse(
+                    call: Call<ListOrderResponse>,
+                    response: Response<ListOrderResponse>
+                ) {
+                    try {
+                        response.body()?.let{
+                            _orders.value = it.items
+                            _resultState.value = ResultState.Success("Success")
+                            Log.d("SneakersView", "Success")
+                        }
+                        response.errorBody()?.let {
+                            try {
+                                val message =
+                                    Gson().fromJson(it.string(), ErrorResponce::class.java).message
+                                _resultState.value = ResultState.Error(message)
+
+                            } catch (ex: Exception) {
+                                Log.e(
+                                    "SneakersView",
+                                    "Failed to parse error response: ${ex.message}"
+                                )
+                                _resultState.value = ResultState.Error(ex.message.toString())
+                            }
+                        }
+                    } catch (ex: Exception) {
+                        Log.e("SneakersView", ex.message.toString())
+                        _resultState.value = ResultState.Error(ex.message.toString())
+                    }
+                }
+                override fun onFailure(call: Call<ListOrderResponse>, t: Throwable) {
+                    _resultState.value = ResultState.Error(t.message.toString())
+                    Log.e("SneakersView", t.message.toString())
+                }
+            })
         }
     }
 
@@ -110,7 +161,6 @@ class ViewOrders: ViewModel() {
                         response: Response<PozitionResponse>,
                     ) {
                         try {
-                            // Если запрос успешен, сохраняем список книг и обновляем состояние
                             response.body()?.let {
                                 val id = it.id
                                 _resultStatePoz.value = ResultState.Success("Success")
@@ -136,7 +186,6 @@ class ViewOrders: ViewModel() {
                     }
 
                     override fun onFailure(call: Call<PozitionResponse>, t: Throwable) {
-                        // Обработка ошибки при выполнении запроса
                         _resultStatePoz.value = ResultState.Error(t.message.toString())
                         Log.e("createOrderPozition", t.message.toString())
                     }

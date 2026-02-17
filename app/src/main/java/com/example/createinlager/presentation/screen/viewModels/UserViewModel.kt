@@ -57,6 +57,13 @@ class UserViewModel(): ViewModel() {
     private val _resultEmailState = MutableStateFlow<ResultState>(ResultState.Initialized)
     val resultEmailState: StateFlow<ResultState> = _resultEmailState.asStateFlow()
 
+    fun getImage(collectionId:String, iduser: String, image:String): String {
+        val imageUrl =
+            "http://192.168.31.176:8090/api/files/${collectionId}/${iduser}/${image}"
+        Log.i("Image", imageUrl)
+        return imageUrl
+    }
+
     fun Registration(name: String, email: String, password: String) {
         _resultState.value = ResultState.Loading
         viewModelScope.launch {
@@ -340,13 +347,15 @@ class UserViewModel(): ViewModel() {
         }
     }
 
-    fun UpdateUser(userId: String,token: String, email: String, phone: String, card: String, address: String) {
+    fun UpdateUser(userId: String, token: String, email: String, phone: String, card: String, address: String, name: String, surname: String) {
         _resultState.value = ResultState.Loading
         viewModelScope.launch {
             apiService.UserUpdate(
                 userId = userId,
                 token = token,
                 request = UserUpdate(
+                    name,
+                    surname,
                     email,
                     phone,
                     address,

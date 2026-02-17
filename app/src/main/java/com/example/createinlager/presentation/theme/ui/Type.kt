@@ -106,6 +106,14 @@ val TextOnBoardTypeSmall = TextStyle(
     letterSpacing = 0.sp
 )
 
+val CategoryName = TextStyle(
+    fontFamily = RaleWayFamily,
+    fontWeight = FontWeight(500),
+    fontSize = 16.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.sp
+)
+
 val ButtonText = TextStyle(
     fontFamily = RaleWayFamily,
     fontWeight = FontWeight(400),

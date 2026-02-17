@@ -5,10 +5,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import com.example.createinlager.data.model.FavoriteList
 import com.example.createinlager.data.model.FavoriteResponse
+import com.example.createinlager.data.model.OrderResponse
 import com.example.createinlager.data.model.Sneakers
 import com.example.createinlager.data.model.UserResponse
 import com.example.professionals.data.model.market.InCart
 import com.example.professionals.data.model.market.ListInCart
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.collections.map
 
 @Composable
@@ -30,6 +33,29 @@ fun ConverToArrayArray(sneakers:  State<List<Sneakers>>): Array<Array<String>>{
                 sneaker.watch,
                 sneaker.created,
                 sneaker.updated
+            )
+        }.toTypedArray()
+    }
+    return twoDArray
+}
+
+
+@Composable
+fun ConverToArrayArrayOrderList(orders: List<OrderResponse>): Array<Array<String>> {
+    val twoDArray = remember(orders) {
+
+        orders.map { order ->
+            arrayOf(
+                order.id ,                   // [0]
+                order.idusers,              // [1]
+                order.id_snakers_title,     // [2]
+                order.costOrder,            // [3]
+                order.cost,                 // [4]
+                order.email,                // [5]
+                order.phone,                // [6]
+                order.address,              // [7]
+                order.card,                 // [8]
+                order.created              // [9]
             )
         }.toTypedArray()
     }
@@ -133,5 +159,36 @@ fun ListFavoriteSneakersCreate(ListSneakers: Array<Array<String>>, listFavorite:
     }
     return ListFavoriteSneakers.toTypedArray()
 
+}
+
+fun CurrentDateTime(): Array<Int>{
+    val currentDateTime = LocalDateTime.now()
+    val ArrayData: Array<Int> = arrayOf(
+        currentDateTime.year,
+        currentDateTime.monthValue,
+        currentDateTime.dayOfMonth,
+        currentDateTime.hour,
+        currentDateTime.minute,
+        currentDateTime.second
+    )
+    return ArrayData
+}
+
+fun parsingByTime(BuyTime: String): Array<Int>{
+    val dateString = BuyTime
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS'Z'")
+    val dateTime = LocalDateTime.parse(dateString, formatter)
+
+    val ArrayData: Array<Int> = arrayOf(
+        dateTime.year,
+        dateTime.monthValue,
+        dateTime.dayOfMonth,
+        dateTime.hour,
+        dateTime.minute,
+        dateTime.second
+    )
+
+    return ArrayData
 }
 

@@ -428,7 +428,7 @@ fun columnProducts(sneakers: Array<Array<String>>, iduser: String,token: String,
 
 
 @Composable
-fun navigationBar(userId:String, token: String,navController: NavController){
+fun navigationBar(userId:String, token: String,state: Int, navController: NavController){
     Box(modifier = Modifier.fillMaxSize().height(116.dp),  contentAlignment = Alignment.BottomCenter,){
 
         IconButton(
@@ -449,7 +449,7 @@ fun navigationBar(userId:String, token: String,navController: NavController){
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter){
 
             Image(bitmap = ImageBitmap.imageResource(R.drawable.homenav), contentDescription =null, modifier = Modifier.fillMaxWidth(), contentScale = ContentScale.FillWidth )
-            RowInBox(userId, token, navController)
+            RowInBox(userId, token,state, navController)
 
         }
 
@@ -457,7 +457,7 @@ fun navigationBar(userId:String, token: String,navController: NavController){
 }
 
 @Composable
-fun RowInBox(userId:String, token: String,navController: NavController){
+fun RowInBox(userId:String, token: String,state:Int, navController: NavController){
 
 
     Row(modifier = Modifier.fillMaxWidth().padding(30.dp).height(35.dp), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceBetween) {
@@ -465,26 +465,26 @@ fun RowInBox(userId:String, token: String,navController: NavController){
         IconButton(
             onClick = {navController.navigate("Home/${userId}/${token}")},
             modifier =  Modifier
-                .fillMaxHeight() // Размер кнопки
+                .fillMaxHeight()
         ) {
             Icon(
                 bitmap = ImageBitmap.imageResource(R.drawable.home),
                 modifier = Modifier.fillMaxSize(0.7f),
                 contentDescription = null,
-                tint = colorResource(R.color.accent)
+                tint = colorResource(if(state==0) R.color.accent else R.color.hint)
             )
         }
 
         IconButton(
             onClick = {navController.navigate("Favorite/${userId}/${token}")},
             modifier =  Modifier
-                .fillMaxHeight() // Размер кнопки
+                .fillMaxHeight()
         ) {
             Icon(
                 bitmap = ImageBitmap.imageResource(R.drawable.empty_heart),
                 modifier = Modifier.fillMaxSize(0.7f),
                 contentDescription = null,
-                tint = colorResource(R.color.hint)
+                tint = colorResource(if(state==1) R.color.accent else R.color.hint)
             )
         }
 
@@ -493,34 +493,29 @@ fun RowInBox(userId:String, token: String,navController: NavController){
         IconButton(
             onClick = {},
             modifier =  Modifier
-                .fillMaxHeight() // Размер кнопки
+                .fillMaxHeight()
         ) {
             Icon(
                 bitmap = ImageBitmap.imageResource(R.drawable.notification),
                 modifier = Modifier.fillMaxSize(0.7f),
                 contentDescription = null,
-                tint = colorResource(R.color.hint)
+                tint = colorResource(if(state==2) R.color.accent else R.color.hint)
             )
         }
 
         IconButton(
-            onClick = { navController.navigate("Profile/${userId}/${token}")},
+            onClick = { navController.navigate("ProfileScreen/${userId}/${token}")},
             modifier =  Modifier
-                .fillMaxHeight() // Размер кнопки
+                .fillMaxHeight()
         ) {
             Icon(
                 bitmap = ImageBitmap.imageResource(R.drawable.people),
                 modifier = Modifier.fillMaxSize(0.7f),
                 contentDescription = null,
-                tint = colorResource(R.color.hint)
+                tint = colorResource(if(state==3) R.color.accent else R.color.hint)
             )
         }
-
-
-
     }
-
-
 }
 
 
